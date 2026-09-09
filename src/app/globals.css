@@ -1,26 +1,79 @@
 @import "tailwindcss";
 
+/*
+  Dad of Diamonds — theme tokens
+  Warm ivory / ink palette with a muted gold accent. Light + dark.
+*/
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --background: #faf8f4;
+  --surface: #ffffff;
+  --surface-muted: #f2ede4;
+  --foreground: #1b1a17;
+  --muted: #6b6459;
+  --border: #e5ddcf;
+  --accent: #a9853f;
+  --accent-strong: #8a6a2e;
+  --accent-contrast: #ffffff;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #100f0d;
+    --surface: #1a1815;
+    --surface-muted: #211e19;
+    --foreground: #efe9dd;
+    --muted: #a49a88;
+    --border: #2e2a23;
+    --accent: #c8a35c;
+    --accent-strong: #d9b978;
+    --accent-contrast: #17140d;
   }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-contrast: var(--accent-contrast);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-display), ui-serif, Georgia, serif;
+}
+
+* {
+  border-color: var(--color-border);
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: 0.01em;
+}
+
+/* Thin uppercase label used across the site */
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--muted);
 }

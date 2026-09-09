@@ -13,6 +13,13 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
   ]),
+  {
+    rules: {
+      // Product images are lightweight SVG placeholders (and, later, CMS URLs
+      // rendered with a plain <img>). Deliberate — the optimizer isn't wanted here.
+      "@next/next/no-img-element": "off",
+    },
+  },
 ]);
 
 export default eslintConfig;
