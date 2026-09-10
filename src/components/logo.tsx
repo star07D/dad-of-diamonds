@@ -2,11 +2,18 @@ import Link from "next/link";
 import { SITE } from "@/lib/site";
 
 /** The diamond mark on its own — a stylised brilliant cut, top view. */
-export function DiamondMark({ className = "" }: { className?: string }) {
+export function DiamondMark({
+  className = "",
+  draw = false,
+}: {
+  className?: string;
+  /** Animate the facets drawing themselves in on mount. */
+  draw?: boolean;
+}) {
   return (
     <svg
       viewBox="0 0 48 48"
-      className={className}
+      className={`${className} ${draw ? "mark-draw" : ""}`}
       fill="none"
       aria-hidden="true"
     >

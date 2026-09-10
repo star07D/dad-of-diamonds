@@ -4,7 +4,7 @@ import { DiamondMark } from "@/components/logo";
 export default function NotFound() {
   return (
     <div className="flex min-h-[70vh] flex-col items-center justify-center px-4 text-center">
-      <DiamondMark className="h-10 w-10 text-accent" />
+      <DiamondMark draw className="h-12 w-12 text-accent" />
       <p className="eyebrow mt-6">404</p>
       <h1 className="mt-3 font-display text-4xl">This page has been set aside</h1>
       <p className="mt-3 max-w-sm text-muted">

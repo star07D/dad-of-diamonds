@@ -134,4 +134,78 @@ body {
     from { opacity: 0; transform: translateY(24px) scale(0.98); }
     to { opacity: 1; transform: none; }
   }
+
+  /* --- Signature: sparkles ------------------------------------------- */
+  .sparkle {
+    animation: twinkle 5s ease-in-out infinite;
+    animation-delay: var(--spark-delay, 0s);
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+    6% { opacity: 1; transform: scale(1) rotate(35deg); }
+    14% { opacity: 0; transform: scale(0.4) rotate(70deg); }
+    55%, 94% { opacity: 0; transform: scale(0); }
+  }
+
+  /* --- Signature: gold light sweep across the headline --------------- */
+  .text-shimmer {
+    background: linear-gradient(
+      100deg,
+      var(--foreground) 0%,
+      var(--foreground) 40%,
+      var(--accent-strong) 47%,
+      #f7ecd2 50%,
+      var(--accent-strong) 53%,
+      var(--foreground) 60%,
+      var(--foreground) 100%
+    );
+    background-size: 250% 100%;
+    background-position: 150% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: shimmer 10s ease-in-out 1.4s infinite;
+  }
+  @keyframes shimmer {
+    0% { background-position: 150% 0; }
+    16%, 100% { background-position: -120% 0; }
+  }
+
+  /* --- Signature: the diamond mark draws itself in ------------------- */
+  .mark-draw path {
+    stroke-dasharray: 120;
+    stroke-dashoffset: 120;
+    animation: draw 1.6s ease-out forwards;
+  }
+  .mark-draw path:nth-child(2) { animation-delay: 0.15s; }
+  .mark-draw path:nth-child(3) { animation-delay: 0.3s; }
+  .mark-draw path:nth-child(4) { animation-delay: 0.45s; }
+  .mark-draw path:nth-child(5) { animation-delay: 0.55s; }
+  .mark-draw path:nth-child(6) { animation-delay: 0.65s; }
+  @keyframes draw {
+    to { stroke-dashoffset: 0; }
+  }
+
+  /* --- Signature: a loupe follows the cursor over the hero piece ----- */
+  .cursor-light::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      170px circle at var(--mx, 50%) var(--my, 50%),
+      transparent 0%,
+      transparent 28%,
+      rgba(12, 9, 4, 0.34) 78%
+    );
+    opacity: 0;
+    transition: opacity 0.45s ease;
+    pointer-events: none;
+  }
+  .cursor-light[data-active]::after {
+    opacity: 1;
+  }
+  .cursor-light[data-active] img {
+    transform: scale(1.06);
+  }
 }

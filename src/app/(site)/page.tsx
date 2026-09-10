@@ -3,7 +3,8 @@ import { getFeaturedProducts } from "@/lib/products";
 import { ProductCard } from "@/components/product-card";
 import { DiamondMark } from "@/components/logo";
 import { Reveal } from "@/components/reveal";
-import { formatPrice } from "@/lib/format";
+import { HeroShowcase } from "@/components/hero-showcase";
+import { Sparkles } from "@/components/sparkles";
 import { CATEGORIES } from "@/lib/site";
 
 export default async function HomePage() {
@@ -15,13 +16,16 @@ export default async function HomePage() {
     <>
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-border">
-        <div className="mx-auto grid max-w-6xl gap-10 px-4 py-20 sm:px-6 md:grid-cols-2 md:items-center md:py-28">
+        <Sparkles />
+        <div className="relative z-20 mx-auto grid max-w-6xl gap-10 px-4 py-20 sm:px-6 md:grid-cols-2 md:items-center md:py-28">
           <div className="hero-in min-w-0">
             <p className="eyebrow">A private diamond collection</p>
             <h1 className="mt-4 font-display text-4xl leading-[1.05] sm:text-5xl md:text-6xl">
-              Rare stones,
-              <br />
-              made personal.
+              <span className="text-shimmer">
+                Rare stones,
+                <br />
+                made personal.
+              </span>
             </h1>
             <p className="mt-6 max-w-md text-lg text-muted">
               Certified loose diamonds and finished jewellery, hand-picked and
@@ -47,30 +51,12 @@ export default async function HomePage() {
           <div className="relative mx-auto flex aspect-square w-full min-w-0 max-w-sm items-center justify-center">
             <div className="animate-glow absolute inset-0 rounded-full bg-accent/15 blur-3xl" />
             {hero ? (
-              <Link
-                href={`/product/${hero.slug}`}
-                className="hero-media group relative block w-full overflow-hidden rounded-xl border border-border bg-surface-muted shadow-lg"
-              >
-                <img
-                  src={hero.images[0]?.src}
-                  alt={hero.images[0]?.alt ?? hero.name}
-                  className="aspect-[4/5] w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                />
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/65 to-transparent p-4 pt-10 text-white">
-                  <p className="text-xs uppercase tracking-[0.18em] text-white/70">
-                    Featured
-                  </p>
-                  <p className="mt-1 font-display text-lg leading-tight">
-                    {hero.name}
-                  </p>
-                  <p className="text-sm text-white/80">
-                    {formatPrice(hero.price)}
-                  </p>
-                </div>
-                <DiamondMark className="absolute right-3 top-3 h-6 w-6 text-white/90 drop-shadow" />
-              </Link>
+              <HeroShowcase product={hero} />
             ) : (
-              <DiamondMark className="animate-float relative h-56 w-56 text-accent sm:h-72 sm:w-72" />
+              <DiamondMark
+                draw
+                className="animate-float relative h-56 w-56 text-accent sm:h-72 sm:w-72"
+              />
             )}
           </div>
         </div>
@@ -143,7 +129,11 @@ export default async function HomePage() {
 
       {/* CTA */}
       <section className="relative overflow-hidden">
-        <DiamondMark className="pointer-events-none absolute -right-10 top-1/2 h-64 w-64 -translate-y-1/2 text-accent/10" />
+        <DiamondMark
+          draw
+          className="animate-float pointer-events-none absolute -right-12 top-1/2 h-64 w-64 -translate-y-1/2 text-accent/15"
+        />
+        <DiamondMark className="pointer-events-none absolute -left-16 bottom-0 h-48 w-48 text-accent/10" />
         <Reveal className="mx-auto max-w-6xl px-4 py-20 text-center sm:px-6">
           <h2 className="font-display text-3xl sm:text-4xl">
             Not sure where to start?
