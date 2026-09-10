@@ -77,3 +77,61 @@ body {
   font-weight: 500;
   color: var(--muted);
 }
+
+/* ------------------------------------------------------------------ *
+ * Motion — all gated behind prefers-reduced-motion
+ * ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: no-preference) {
+  /* Scroll-in reveal (toggled by <Reveal>) */
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+      opacity 0.7s ease,
+      transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: opacity, transform;
+  }
+  [data-reveal][data-visible] {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Hero load-in: children rise in sequence */
+  .hero-in > * {
+    animation: rise-in 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  .hero-in > *:nth-child(1) { animation-delay: 0.05s; }
+  .hero-in > *:nth-child(2) { animation-delay: 0.15s; }
+  .hero-in > *:nth-child(3) { animation-delay: 0.25s; }
+  .hero-in > *:nth-child(4) { animation-delay: 0.35s; }
+
+  @keyframes rise-in {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  .animate-float {
+    animation: float 7s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+
+  .animate-glow {
+    animation: glow 6s ease-in-out infinite;
+  }
+  @keyframes glow {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 0.85; transform: scale(1.06); }
+  }
+
+  .hero-media {
+    animation: media-in 1s cubic-bezier(0.2, 0.7, 0.2, 1) 0.2s both;
+  }
+  @keyframes media-in {
+    from { opacity: 0; transform: translateY(24px) scale(0.98); }
+    to { opacity: 1; transform: none; }
+  }
+}

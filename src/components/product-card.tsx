@@ -10,13 +10,13 @@ export function ProductCard({ product }: { product: Product }) {
   return (
     <Link
       href={`/product/${product.slug}`}
-      className="group flex flex-col overflow-hidden rounded-lg border border-border bg-surface transition-colors hover:border-accent"
+      className="group flex flex-col overflow-hidden rounded-lg border border-border bg-surface transition-all duration-300 hover:-translate-y-1 hover:border-accent hover:shadow-[0_16px_40px_-16px_rgba(0,0,0,0.35)]"
     >
       <div className="relative aspect-square overflow-hidden bg-surface-muted">
         <img
           src={image?.src}
           alt={image?.alt ?? product.name}
-          className={`h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04] ${
+          className={`h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06] ${
             soldOut ? "opacity-60 grayscale" : ""
           }`}
           loading="lazy"
