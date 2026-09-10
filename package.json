@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "seed": "tsx scripts/seed-sanity.ts",
+    "seed": "tsx scripts/seed-sanity.mts",
     "typegen": "sanity typegen generate"
   },
   "dependencies": {

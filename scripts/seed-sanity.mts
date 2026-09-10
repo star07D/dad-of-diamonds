@@ -38,9 +38,14 @@ const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || "production";
 const token = process.env.SANITY_API_WRITE_TOKEN;
 
-if (!projectId || !token) {
+if (!projectId) {
+  console.error("Missing NEXT_PUBLIC_SANITY_PROJECT_ID in .env.local");
+  process.exit(1);
+}
+if (!token) {
   console.error(
-    "Missing NEXT_PUBLIC_SANITY_PROJECT_ID or SANITY_API_WRITE_TOKEN in .env.local",
+    "Missing SANITY_API_WRITE_TOKEN in .env.local\n" +
+      "Create one at https://www.sanity.io/manage → project → API → Tokens (Editor role).",
   );
   process.exit(1);
 }
