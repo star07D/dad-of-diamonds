@@ -101,17 +101,53 @@ built yet — needs the CMS first.)
 
 ---
 
-## Connect the CMS (so products can be edited without code)
+## Connect the CMS (Sanity)
 
-Right now products live in `src/lib/sample-products.ts`. To let the shop owner
-add and edit pieces from a dashboard:
+The Studio is **already built** — it lives at `/studio` and the schema is in
+`src/sanity/schemaTypes/product.ts`. It just needs a Sanity project to point at.
+Until then the site serves `src/lib/sample-products.ts` and `/studio` shows a
+setup notice.
 
-1. `npm create sanity@latest` inside a `studio/` folder, or use Sanity's hosted
-   studio. Create a **product** schema matching `src/lib/types.ts`.
-2. `npm install next-sanity @sanity/image-url`
-3. Replace the body of `loadProducts()` in `src/lib/products.ts` with a Sanity
-   query. Nothing else changes — every page reads through that one function.
-4. Add `NEXT_PUBLIC_SANITY_PROJECT_ID` and `NEXT_PUBLIC_SANITY_DATASET` to Vercel.
+### 1. Create a free Sanity project
+
+1. Go to <https://www.sanity.io/manage> → sign in with Google/GitHub
+2. **Create new project** → name it "Dad of Diamonds"
+3. Dataset: **production** (public)
+4. Copy the **Project ID** shown on the dashboard
+
+### 2. Allow your site to talk to Sanity (CORS)
+
+In the project dashboard → **API → CORS origins → Add origin**:
+
+- `http://localhost:3000` (check "Allow credentials")
+- your Vercel URL, e.g. `https://dad-of-diamonds.vercel.app` (check "Allow credentials")
+
+### 3. Add the env vars
+
+Locally (`.env.local`) **and** in Vercel → Settings → Environment Variables:
+
+```
+NEXT_PUBLIC_SANITY_PROJECT_ID=your-project-id
+NEXT_PUBLIC_SANITY_DATASET=production
+```
+
+Redeploy on Vercel. Now `/studio` loads the real editor (sign in with the same
+Sanity account).
+
+### 4. (Optional) Load the 12 starter pieces
+
+1. In Sanity dashboard → **API → Tokens → Add token** → name "seed", role
+   **Editor** → copy it
+2. Add to `.env.local`: `SANITY_API_WRITE_TOKEN=your-token`
+3. Run:
+   ```bash
+   npm run seed
+   ```
+4. Open `/studio`, replace the placeholder images with real photos, delete any
+   pieces you don't want.
+
+> The token is only for this one script — don't put it in Vercel. Delete it from
+> Sanity afterwards if you like.
 
 ---
 
@@ -123,3 +159,4 @@ add and edit pieces from a dashboard:
 | `npm run build` | Production build |
 | `npm run start` | Serve the production build |
 | `npm run lint` | ESLint |
+| `npm run seed` | Load the 12 starter pieces into Sanity (needs a write token) |

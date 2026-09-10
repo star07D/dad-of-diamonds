@@ -1,27 +1,41 @@
 import "server-only";
 import type { Product } from "./types";
 import { SAMPLE_PRODUCTS } from "./sample-products";
+import { sanityConfigured } from "@/sanity/env";
+import { fetchProductsFromSanity } from "@/sanity/lib/queries";
 
 /**
  * Single entry point for reading the catalogue.
  *
- * Today it returns the local sample data. When the CMS is connected, swap the
- * body of `loadProducts()` for a Sanity query — every page goes through these
- * helpers, so nothing else has to change. See README → "Connect the CMS".
+ * - If Sanity is configured (NEXT_PUBLIC_SANITY_PROJECT_ID is set), products
+ *   come from the CMS.
+ * - Otherwise the local sample data is used, so the site always renders.
+ *
+ * Every page reads through the helpers below — nothing else touches the source.
  */
 async function loadProducts(): Promise<Product[]> {
+  if (sanityConfigured) {
+    try {
+      return await fetchProductsFromSanity();
+    } catch (err) {
+      console.error("[products] Sanity fetch failed, using sample data:", err);
+      return SAMPLE_PRODUCTS;
+    }
+  }
   return SAMPLE_PRODUCTS;
 }
 
+const statusRank: Record<Product["status"], number> = {
+  available: 0,
+  reserved: 1,
+  sold: 2,
+};
+
 export async function getAllProducts(): Promise<Product[]> {
   const products = await loadProducts();
-  // Available first, then reserved, then sold.
-  const rank: Record<Product["status"], number> = {
-    available: 0,
-    reserved: 1,
-    sold: 2,
-  };
-  return [...products].sort((a, b) => rank[a.status] - rank[b.status]);
+  return [...products].sort(
+    (a, b) => statusRank[a.status] - statusRank[b.status],
+  );
 }
 
 export async function getProductsByCategory(
