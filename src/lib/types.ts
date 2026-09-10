@@ -26,7 +26,7 @@ export interface Product {
   name: string;
   category: CategorySlug;
   /** Price in the smallest currency unit is NOT used here — this is a plain
-   * number in major units (e.g. rupees). Converted for Stripe at checkout. */
+   * number in major units (e.g. dollars). Converted for Stripe at checkout. */
   price: number;
   /** Short one-liner shown on cards. */
   summary: string;

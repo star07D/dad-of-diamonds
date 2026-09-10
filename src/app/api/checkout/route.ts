@@ -55,7 +55,10 @@ export async function POST(request: Request) {
     cancel_url: `${origin}/cart`,
     billing_address_collection: "required",
     shipping_address_collection: {
-      allowed_countries: ["IN", "US", "GB", "AE", "SG", "CA", "AU"],
+      allowed_countries: [
+        "DE", "US", "GB", "FR", "IT", "ES", "NL", "AT", "BE", "CH",
+        "AE", "SG", "CA", "AU", "IN",
+      ],
     },
     phone_number_collection: { enabled: true },
   });

@@ -3,7 +3,7 @@ import type { Product } from "./types";
 /**
  * Placeholder catalogue so the site is fully browsable before the CMS is
  * connected. Replace with real data from Sanity (see README → "Connect the CMS").
- * Prices are in Indian rupees (major units).
+ * Prices are in US dollars (major units) — indicative only.
  */
 export const SAMPLE_PRODUCTS: Product[] = [
   {
@@ -11,7 +11,7 @@ export const SAMPLE_PRODUCTS: Product[] = [
     slug: "1-51ct-round-brilliant-e-vs1",
     name: "1.51ct Round Brilliant, E / VS1",
     category: "loose-diamonds",
-    price: 985000,
+    price: 16500,
     summary: "Ideal-cut round brilliant with exceptional fire. GIA certified.",
     description:
       "A 1.51 carat round brilliant diamond graded E colour and VS1 clarity, cut to ideal proportions for maximum light return. Accompanied by its original GIA certificate and laser inscription. Supplied loose; can be set into any design from the workshop.",
@@ -33,7 +33,7 @@ export const SAMPLE_PRODUCTS: Product[] = [
     slug: "2-08ct-emerald-cut-f-vvs2",
     name: "2.08ct Emerald Cut, F / VVS2",
     category: "loose-diamonds",
-    price: 1640000,
+    price: 32000,
     summary: "Long, elegant emerald cut with a clean hall-of-mirrors table.",
     description:
       "A 2.08 carat emerald-cut diamond, F colour, VVS2 clarity, with a 1.42 length-to-width ratio for a classic elongated look. IGI certified. A restrained, architectural stone that suits a solitaire or three-stone setting.",
@@ -55,7 +55,7 @@ export const SAMPLE_PRODUCTS: Product[] = [
     slug: "1-20ct-oval-g-si1",
     name: "1.20ct Oval, G / SI1",
     category: "loose-diamonds",
-    price: 520000,
+    price: 7200,
     summary: "Bright oval with no visible inclusions to the eye.",
     description:
       "A 1.20 carat oval diamond, G colour, SI1 clarity — eye-clean and lively, with a balanced outline and minimal bow-tie. GIA certified. Excellent value for a centre stone.",
@@ -76,7 +76,7 @@ export const SAMPLE_PRODUCTS: Product[] = [
     slug: "3-01ct-pear-h-vs2",
     name: "3.01ct Pear, H / VS2",
     category: "loose-diamonds",
-    price: 2350000,
+    price: 47500,
     summary: "A statement pear-shape, over three carats, warm white.",
     description:
       "A 3.01 carat pear-shaped diamond, H colour, VS2 clarity. A generous, graceful stone with a sharp point and even shoulders. IGI certified. Ideal for a bespoke pendant or a bold ring.",
@@ -97,7 +97,7 @@ export const SAMPLE_PRODUCTS: Product[] = [
     slug: "platinum-solitaire-1-05ct",
     name: "Platinum Solitaire — 1.05ct Centre",
     category: "rings",
-    price: 720000,
+    price: 9800,
     summary: "Four-claw platinum solitaire with a 1.05ct round centre.",
     description:
       "A timeless four-claw solitaire in 950 platinum, set with a 1.05 carat round brilliant (F / VS2, GIA). Knife-edge band, 2mm. Complimentary resizing within one size. Made to order in 10–14 days.",
@@ -112,7 +112,7 @@ export const SAMPLE_PRODUCTS: Product[] = [
     slug: "18k-yellow-gold-halo-0-90ct",
     name: "18k Yellow Gold Halo — 0.90ct",
     category: "rings",
-    price: 545000,
+    price: 4600,
     summary: "Warm yellow-gold halo framing a 0.90ct cushion centre.",
     description:
       "An 18k yellow gold halo ring with a 0.90 carat cushion-cut centre (G / SI1) surrounded by 0.35ctw of pavé diamonds. A soft, vintage-leaning silhouette. Made to order.",
@@ -126,7 +126,7 @@ export const SAMPLE_PRODUCTS: Product[] = [
     slug: "18k-white-gold-line-necklace-3ctw",
     name: "18k White Gold Line Necklace — 3.0ctw",
     category: "necklaces",
-    price: 890000,
+    price: 13500,
     summary: "Sixteen-inch riviere of graduated round diamonds.",
     description:
       "A classic diamond line (riviere) necklace in 18k white gold, 3.0 carats total, graduated from centre to clasp. G–H colour, VS–SI clarity. Secure box clasp with figure-eight safety.",
@@ -140,7 +140,7 @@ export const SAMPLE_PRODUCTS: Product[] = [
     slug: "solitaire-pendant-0-70ct",
     name: "Solitaire Pendant — 0.70ct",
     category: "necklaces",
-    price: 265000,
+    price: 3900,
     summary: "A single 0.70ct round on an adjustable white-gold chain.",
     description:
       "A 0.70 carat round brilliant (F / VS2) in a three-claw pendant setting, on an 18k white gold cable chain adjustable between 16 and 18 inches.",
@@ -154,7 +154,7 @@ export const SAMPLE_PRODUCTS: Product[] = [
     slug: "diamond-studs-2-00ctw",
     name: "Diamond Studs — 2.00ctw",
     category: "earrings",
-    price: 780000,
+    price: 11500,
     summary: "Matched pair, one carat each, four-claw martini setting.",
     description:
       "A matched pair of round brilliant studs, 1.00 carat each (2.00ctw), G colour, SI1 clarity, in 18k white gold martini settings with screw-backs for security. Both stones IGI certified.",
@@ -168,7 +168,7 @@ export const SAMPLE_PRODUCTS: Product[] = [
     slug: "diamond-drop-earrings-1-40ctw",
     name: "Diamond Drop Earrings — 1.40ctw",
     category: "earrings",
-    price: 615000,
+    price: 8200,
     summary: "Articulated drops with pear and round diamonds.",
     description:
       "Articulated drop earrings in 18k white gold, 1.40 carats total, pairing pear-shaped drops with round brilliant tops. Movement and sparkle for evening wear.",
@@ -181,7 +181,7 @@ export const SAMPLE_PRODUCTS: Product[] = [
     slug: "tennis-bracelet-5-00ctw",
     name: "Tennis Bracelet — 5.00ctw",
     category: "bracelets",
-    price: 1250000,
+    price: 17500,
     summary: "Seven inches of four-claw round diamonds, 5 carats total.",
     description:
       "A diamond tennis bracelet in 18k white gold, 5.00 carats total weight across 45 matched round brilliants (G–H, VS–SI). Double-locking clasp. 7 inches, links removable on request.",
@@ -195,7 +195,7 @@ export const SAMPLE_PRODUCTS: Product[] = [
     slug: "diamond-bangle-1-75ctw",
     name: "Diamond Bangle — 1.75ctw",
     category: "bracelets",
-    price: 540000,
+    price: 7400,
     summary: "Half-set hinged bangle with a concealed clasp.",
     description:
       "A hinged 18k white gold bangle, half-set with 1.75 carats of pavé diamonds and a concealed box clasp. Comfortable oval inner shape, 60mm.",

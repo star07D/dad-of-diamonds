@@ -12,12 +12,12 @@ export const SITE = {
   url:
     process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ||
     "http://localhost:3000",
-  email: "hello@dadofdiamonds.com",
-  phone: "+91 00000 00000",
-  whatsapp: "https://wa.me/910000000000",
-  instagram: "https://instagram.com/",
-  currency: "INR",
-  locale: "en-IN",
+  email: "dhruvpatel6530@gmail.com",
+  phone: "+49 176 62754805",
+  whatsapp: "https://wa.me/4917662754805",
+  instagram: "https://instagram.com/dhruuv046",
+  currency: "USD",
+  locale: "en-US",
 } as const;
 
 export const CATEGORIES = [
