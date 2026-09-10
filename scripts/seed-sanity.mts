@@ -58,14 +58,30 @@ const client = createClient({
   useCdn: false,
 });
 
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+/** Retry a Sanity call a few times — their asset endpoint 502s occasionally. */
+async function withRetry<T>(label: string, fn: () => Promise<T>): Promise<T> {
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return await fn();
+    } catch (err) {
+      if (attempt >= 5) throw err;
+      const wait = attempt * 2000;
+      console.log(`  ${label} failed (attempt ${attempt}), retrying in ${wait / 1000}s…`);
+      await sleep(wait);
+    }
+  }
+}
+
 const uploaded = new Map<string, string>();
 
 async function uploadImage(src: string, alt: string) {
   if (!uploaded.has(src)) {
     const buf = readFileSync(join(root, "public", src.replace(/^\//, "")));
-    const asset = await client.assets.upload("image", buf, {
-      filename: src.split("/").pop(),
-    });
+    const asset = await withRetry(`upload ${src}`, () =>
+      client.assets.upload("image", buf, { filename: src.split("/").pop() }),
+    );
     uploaded.set(src, asset._id);
     console.log("  uploaded", src);
   }
@@ -79,10 +95,11 @@ async function uploadImage(src: string, alt: string) {
 
 for (const p of SAMPLE_PRODUCTS) {
   console.log("seeding", p.name);
-  const images = [];
+  const images: Awaited<ReturnType<typeof uploadImage>>[] = [];
   for (const img of p.images) images.push(await uploadImage(img.src, img.alt));
 
-  await client.createOrReplace({
+  await withRetry(`write ${p.id}`, () =>
+    client.createOrReplace({
     _id: `seed-${p.id}`,
     _type: "product",
     name: p.name,
@@ -96,7 +113,8 @@ for (const p of SAMPLE_PRODUCTS) {
     ...(p.material ? { material: p.material } : {}),
     images,
     ...(p.diamond ? { diamond: p.diamond } : {}),
-  });
+    }),
+  );
 }
 
-console.log(`\nDone — ${SAMPLE_PRODUCTS.length} pieces in Sanity. Open /studio.`);
+console.log(`\nDone - ${SAMPLE_PRODUCTS.length} pieces in Sanity. Open /studio.`);
