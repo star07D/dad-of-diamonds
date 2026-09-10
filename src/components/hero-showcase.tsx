@@ -1,37 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { useRef } from "react";
 import { DiamondMark } from "./logo";
+import { useLoupe } from "@/lib/use-loupe";
 import { formatPrice } from "@/lib/format";
 import type { Product } from "@/lib/types";
 
 /**
- * The framed featured piece in the hero. A soft light follows the cursor
- * across it, like light travelling over a stone.
+ * The framed featured piece in the hero. A loupe follows the cursor across it.
  */
 export function HeroShowcase({ product }: { product: Product }) {
-  const ref = useRef<HTMLAnchorElement>(null);
-
-  function onMove(e: React.PointerEvent) {
-    const el = ref.current;
-    if (!el || e.pointerType === "touch") return;
-    const r = el.getBoundingClientRect();
-    el.style.setProperty("--mx", `${((e.clientX - r.left) / r.width) * 100}%`);
-    el.style.setProperty("--my", `${((e.clientY - r.top) / r.height) * 100}%`);
-    el.dataset.active = "";
-  }
-  function onLeave() {
-    const el = ref.current;
-    if (el) delete el.dataset.active;
-  }
+  const loupe = useLoupe();
 
   return (
     <Link
-      ref={ref}
+      {...loupe}
       href={`/product/${product.slug}`}
-      onPointerMove={onMove}
-      onPointerLeave={onLeave}
       className="cursor-light hero-media group relative block w-full overflow-hidden rounded-xl border border-border bg-surface-muted shadow-lg"
     >
       <img

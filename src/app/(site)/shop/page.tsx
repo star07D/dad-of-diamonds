@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getAllProducts, getProductsByCategory } from "@/lib/products";
 import { ProductCard } from "@/components/product-card";
+import { Reveal } from "@/components/reveal";
 import { CATEGORIES, categoryLabel } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -54,8 +55,10 @@ export default async function ShopPage({
         </p>
       ) : (
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
+          {products.map((product, i) => (
+            <Reveal key={product.id} delay={(i % 3) * 70}>
+              <ProductCard product={product} />
+            </Reveal>
           ))}
         </div>
       )}

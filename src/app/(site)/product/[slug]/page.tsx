@@ -10,6 +10,7 @@ import { categoryLabel } from "@/lib/site";
 import { AddToCart } from "@/components/add-to-cart";
 import { StatusBadge } from "@/components/status-badge";
 import { ProductGallery } from "@/components/product-gallery";
+import { Reveal } from "@/components/reveal";
 
 export async function generateStaticParams() {
   const products = await getAllProducts();
@@ -68,9 +69,14 @@ export default async function ProductPage({
       </nav>
 
       <div className="mt-6 grid gap-10 md:grid-cols-2 md:gap-14">
-        <ProductGallery images={product.images} sold={product.status === "sold"} />
+        <Reveal>
+          <ProductGallery
+            images={product.images}
+            sold={product.status === "sold"}
+          />
+        </Reveal>
 
-        <div>
+        <Reveal delay={90}>
           {product.status !== "available" && (
             <div className="mb-4">
               <StatusBadge status={product.status} />
@@ -105,7 +111,7 @@ export default async function ProductPage({
               {product.description}
             </p>
           </div>
-        </div>
+        </Reveal>
       </div>
     </div>
   );

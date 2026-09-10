@@ -3,9 +3,9 @@
 import { useEffect, useRef, useState, type ElementType } from "react";
 
 /**
- * Fades + rises its children into view once, when scrolled near the viewport.
- * No-ops (renders children immediately visible) when the user prefers reduced
- * motion or IntersectionObserver is unavailable.
+ * Fades + rises its children into view. Content already on screen at mount
+ * appears immediately; content further down reveals as it's scrolled to.
+ * No-ops (immediately visible) under prefers-reduced-motion.
  */
 export function Reveal({
   children,
@@ -29,11 +29,13 @@ export function Reveal({
     const reduced = window.matchMedia?.(
       "(prefers-reduced-motion: reduce)",
     ).matches;
-    // With reduced motion the hiding CSS is disabled, so content is already
-    // visible — nothing to observe. Only force it on when IO is missing.
+    // Under reduced motion the hiding CSS is off — content is already visible.
     if (reduced) return;
-    if (typeof IntersectionObserver === "undefined") {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time capability fallback
+
+    // Already within (or above) the viewport: reveal right away.
+    const rect = el.getBoundingClientRect();
+    const inView = rect.top < window.innerHeight && rect.bottom > 0;
+    if (inView || typeof IntersectionObserver === "undefined") {
       setVisible(true);
       return;
     }
@@ -49,8 +51,8 @@ export function Reveal({
     );
     observer.observe(el);
 
-    // Safety net: never leave content hidden if the observer somehow doesn't fire.
-    const fallback = window.setTimeout(() => setVisible(true), 3000);
+    // Safety net: never leave content hidden if the observer doesn't fire.
+    const fallback = window.setTimeout(() => setVisible(true), 2000);
 
     return () => {
       observer.disconnect();
