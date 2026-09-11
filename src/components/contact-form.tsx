@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { SITE } from "@/lib/site";
 
+type Status = "idle" | "sending" | "sent" | "error" | "unavailable";
+
 export function ContactForm({
   prefilledItems = [],
 }: {
@@ -17,26 +19,74 @@ export function ContactForm({
           .join("\n")}\n\n`
       : "",
   );
+  const [status, setStatus] = useState<Status>("idle");
+  const [error, setError] = useState<string | null>(null);
+  // Rendered once, used to reject bot submits that fire instantly.
+  const [startedAt] = useState(() => Date.now());
 
-  const body = encodeURIComponent(
+  const whatsappText = encodeURIComponent(
     `${message}\n\n— ${name || "(your name)"}${email ? ` (${email})` : ""}`,
   );
-  const subject = encodeURIComponent(
-    prefilledItems.length
-      ? "Enquiry about a piece"
-      : "Enquiry — Dad of Diamonds",
-  );
-  const mailto = `mailto:${SITE.email}?subject=${subject}&body=${body}`;
-  const whatsapp = `${SITE.whatsapp}?text=${body}`;
+  const whatsapp = `${SITE.whatsapp}?text=${whatsappText}`;
+  const mailto = `mailto:${SITE.email}?subject=${encodeURIComponent(
+    prefilledItems.length ? "Enquiry about a piece" : "Enquiry — Dad of Diamonds",
+  )}&body=${whatsappText}`;
+
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setStatus("sending");
+    setError(null);
+    try {
+      const res = await fetch("/api/enquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          email,
+          message,
+          items: prefilledItems,
+          startedAt,
+        }),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        setStatus("sent");
+      } else if (data.configured === false) {
+        setStatus("unavailable");
+      } else {
+        setStatus("error");
+        setError(data.error ?? "Something went wrong. Please try again.");
+      }
+    } catch {
+      setStatus("error");
+      setError("Network error. Please try again.");
+    }
+  }
+
+  if (status === "sent") {
+    return (
+      <div className="mt-10 rounded-lg border border-border bg-surface-muted p-6">
+        <p className="font-display text-xl">Message sent.</p>
+        <p className="mt-2 text-sm text-muted">
+          Thanks, {name.split(" ")[0]} — you&apos;ll hear back within one
+          business day.
+        </p>
+      </div>
+    );
+  }
 
   return (
-    <form
-      className="mt-10 space-y-5"
-      onSubmit={(e) => {
-        e.preventDefault();
-        window.location.href = mailto;
-      }}
-    >
+    <form className="mt-10 space-y-5" onSubmit={onSubmit}>
+      {/* Honeypot — hidden from people, tempting to bots */}
+      <input
+        type="text"
+        name="company"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        className="absolute -left-[9999px] h-0 w-0 opacity-0"
+      />
+
       <div className="grid gap-5 sm:grid-cols-2">
         <label className="block text-sm">
           <span className="text-muted">Your name</span>
@@ -72,12 +122,21 @@ export function ContactForm({
         />
       </label>
 
+      {(status === "error" || status === "unavailable") && (
+        <p className="rounded-md bg-amber-500/10 px-4 py-3 text-sm text-amber-800 dark:text-amber-300">
+          {status === "unavailable"
+            ? "The contact form isn't fully set up yet — please use WhatsApp or email below instead."
+            : error}
+        </p>
+      )}
+
       <div className="flex flex-col gap-3 sm:flex-row">
         <button
           type="submit"
-          className="rounded-full bg-accent px-6 py-3 text-sm font-medium text-accent-contrast transition-opacity hover:opacity-90"
+          disabled={status === "sending"}
+          className="rounded-full bg-accent px-6 py-3 text-sm font-medium text-accent-contrast transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          Send by email
+          {status === "sending" ? "Sending…" : "Send message"}
         </button>
         <a
           href={whatsapp}
@@ -87,11 +146,18 @@ export function ContactForm({
         >
           Send on WhatsApp
         </a>
+        {status === "unavailable" && (
+          <a
+            href={mailto}
+            className="rounded-full border border-border px-6 py-3 text-center text-sm transition-colors hover:border-accent"
+          >
+            Open in email app
+          </a>
+        )}
       </div>
 
       <p className="text-xs text-muted">
-        This opens your own email app or WhatsApp with the message ready to send —
-        nothing is submitted through the website.
+        Sent straight to us — you&apos;ll hear back within one business day.
       </p>
     </form>
   );

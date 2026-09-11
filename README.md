@@ -81,9 +81,10 @@ edit **`src/lib/site.ts`**.
 1. Create an account at <https://dashboard.stripe.com>. It's free — Stripe takes
    a per-transaction fee only. Stripe needs a registered business to accept live
    payments; **test mode** works without that.
-2. Copy your keys from <https://dashboard.stripe.com/apikeys> into Vercel:
-   - `STRIPE_SECRET_KEY` = `sk_test_...` (or `sk_live_...`)
-   - `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` = `pk_test_...`
+2. Copy your **secret** key from <https://dashboard.stripe.com/apikeys> into
+   Vercel as `STRIPE_SECRET_KEY` (type **Secret**) = `sk_test_...` (or
+   `sk_live_...`). The publishable key isn't used — checkout is Stripe's
+   hosted page, not their JS widget.
 3. Redeploy. The cart button now sends customers to Stripe's hosted checkout.
 4. Test with card `4242 4242 4242 4242`, any future date, any CVC.
 
@@ -98,6 +99,30 @@ Add a webhook at <https://dashboard.stripe.com/webhooks> pointing to
 put the signing secret in `STRIPE_WEBHOOK_SECRET`, and add a
 `src/app/api/webhook/route.ts` handler that updates the product status. (Not
 built yet — needs the CMS first.)
+
+---
+
+## Reliable enquiries (Resend)
+
+The contact form and the cart's "Send enquiry" button both post to
+`src/app/api/enquiry/route.ts`, which emails the enquiry straight to
+`SITE.email` (see `src/lib/site.ts`). Until it's configured, the form shows a
+message and falls back to opening the visitor's own email app — so nothing is
+broken either way, but a configured form is far less likely to lose a lead.
+
+1. Create a free account at <https://resend.com> — **use the same email
+   address as `SITE.email`** (`src/lib/site.ts`). Without a verified sending
+   domain, Resend only delivers to the address the account itself was created
+   with, so this keeps it working immediately.
+2. **API Keys → Create API Key** → copy it.
+3. Add to Vercel: `RESEND_API_KEY` (type **Secret**).
+4. Redeploy. Submit the contact form to test — the email arrives with the
+   customer's address set as reply-to, so you can just hit reply.
+
+To send from your own domain later (e.g. `enquiries@dadofdiamonds.com`
+instead of `onboarding@resend.dev`) and deliver to any address: verify the
+domain under **Domains** in Resend, then set `RESEND_FROM` in Vercel to
+`Dad of Diamonds <enquiries@yourdomain.com>`.
 
 ---
 
