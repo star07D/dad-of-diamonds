@@ -13,9 +13,9 @@ jewellery — built with **Next.js 16**, **React 19**, **Tailwind CSS 4**,
 
 ## What's in the box
 
-- **Full storefront** — home, shop (filterable by category), product detail,
-  cart, about, contact. Every piece is one of a kind: available / reserved /
-  sold.
+- **Full storefront** — home, shop (filterable by category), product detail
+  (with "you may also like"), cart, about, contact. Every piece is one of a
+  kind: available / reserved / sold.
 - **A real CMS** (Sanity, embedded at `/studio`) — add, edit and photograph
   pieces from a dashboard, no code. Falls back to sample data until it's
   connected, so the site is never broken.
@@ -26,10 +26,12 @@ jewellery — built with **Next.js 16**, **React 19**, **Tailwind CSS 4**,
   the shop owner directly, reply-to set to the customer, with honeypot +
   timing spam protection. Falls back to opening the visitor's own email app
   if it isn't configured.
-- **A luxury motion layer, built with plain CSS** — scroll reveals, a
-  cursor-tracking "jeweler's loupe" on product photos, twinkling sparkles, a
-  gold light sweep across the headline, hover lifts. No animation library;
-  everything respects `prefers-reduced-motion`.
+- **A luxury motion layer, built with plain CSS, consistent site-wide** —
+  scroll reveals, a cursor-tracking "jeweler's loupe" on product photos,
+  twinkling sparkles, a gold light sweep across the headline, hover lifts,
+  and a self-drawing diamond mark on empty/confirmation states (404, empty
+  cart, order confirmed). No animation library; everything respects
+  `prefers-reduced-motion`.
 - **SEO** — sitemap, robots.txt, per-page metadata, Open Graph tags, and
   `Product` / `Organization` / `WebSite` structured data (schema.org
   JSON-LD) so pieces are eligible for Google rich results.
@@ -107,6 +109,7 @@ src/
   lib/
     site.ts                 Brand name, contact details, categories  ← edit this
     products.ts             The ONLY place that reads the catalogue
+                             (incl. getRelatedProducts for "you may also like")
     sample-products.ts      Offline fallback catalogue
     types.ts                Product shape
     cart-context.tsx        localStorage cart (useSyncExternalStore)
@@ -256,8 +259,13 @@ Everything is plain CSS + a couple of small hooks — no animation library:
 - **`<Sparkles>`** (`src/components/sparkles.tsx`) — the twinkling stars in
   the hero.
 - Headline shimmer, hero entrance, hover lifts, and the diamond mark's
-  "self-draw" (`<DiamondMark draw />`, used on the 404 page) all live as
-  utility classes in `src/app/globals.css`.
+  "self-draw" (`<DiamondMark draw />`) all live as utility classes in
+  `src/app/globals.css`.
+
+Every page uses the same building blocks, not just the homepage: cart rows
+and the empty-cart state, the about/contact pages (reveal + a faint diamond
+watermark), the checkout confirmation, and both 404 pages all reuse `<Reveal>`
+and `<DiamondMark />` rather than one-off styling.
 
 All of it is wrapped in `@media (prefers-reduced-motion: no-preference)`, so
 visitors who've asked for reduced motion get a fully static, still-complete
@@ -305,8 +313,8 @@ site.
 | Enquiries | ✅ Live |
 | SEO structured data | ✅ Live |
 | Analytics | ✅ Code shipped — enable in the Vercel dashboard (see above) |
+| "You may also like" | ✅ Live |
+| Design polish (motion + visuals site-wide) | ✅ Live |
 | Custom domain | Owner-managed, not part of this repo's deploy |
 
-**Not yet built:** live (real-money) Stripe mode, the sold-item webhook, and a
-few smaller polish items — see open
-conversation / issues for the current list.
+**Not yet built:** live (real-money) Stripe mode, and the sold-item webhook.
