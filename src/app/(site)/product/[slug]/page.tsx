@@ -11,6 +11,8 @@ import { AddToCart } from "@/components/add-to-cart";
 import { StatusBadge } from "@/components/status-badge";
 import { ProductGallery } from "@/components/product-gallery";
 import { Reveal } from "@/components/reveal";
+import { JsonLd } from "@/components/json-ld";
+import { productJsonLd } from "@/lib/json-ld";
 
 export async function generateStaticParams() {
   const products = await getAllProducts();
@@ -55,6 +57,7 @@ export default async function ProductPage({
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+      <JsonLd data={productJsonLd(product)} />
       <nav className="text-sm text-muted">
         <Link href="/shop" className="hover:text-accent">
           Shop

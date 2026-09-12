@@ -30,7 +30,11 @@ jewellery — built with **Next.js 16**, **React 19**, **Tailwind CSS 4**,
   cursor-tracking "jeweler's loupe" on product photos, twinkling sparkles, a
   gold light sweep across the headline, hover lifts. No animation library;
   everything respects `prefers-reduced-motion`.
-- **SEO basics** — sitemap, robots.txt, per-page metadata, Open Graph tags.
+- **SEO** — sitemap, robots.txt, per-page metadata, Open Graph tags, and
+  `Product` / `Organization` / `WebSite` structured data (schema.org
+  JSON-LD) so pieces are eligible for Google rich results.
+- **Analytics** — Vercel Web Analytics, privacy-friendly, no cookie banner
+  needed.
 
 |                                         Shop                                          |                                       Product page                                        |
 | :-------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------: |
@@ -108,8 +112,10 @@ src/
     cart-context.tsx        localStorage cart (useSyncExternalStore)
     stripe.ts / resend.ts   Lazy clients — null until configured
     use-loupe.ts            Shared cursor-spotlight hook
+    json-ld.ts              schema.org Product/Organization/WebSite builders
   components/               Header, footer, logo, cards, gallery, forms,
-                             Reveal (scroll-in), Sparkles, HeroShowcase
+                             Reveal (scroll-in), Sparkles, HeroShowcase,
+                             JsonLd
 scripts/
   seed-sanity.mts           Loads the 12 starter pieces + photos into Sanity
 public/products/            Starter product photography (licensed stock)
@@ -259,6 +265,24 @@ site.
 
 ---
 
+## SEO & analytics
+
+- **Structured data** (`src/lib/json-ld.ts`, rendered by
+  `src/components/json-ld.tsx`) — every product page carries schema.org
+  `Product` + `Offer` markup (price, availability, images, the 4 Cs), and
+  every page carries `Organization` + `WebSite`. Check any live product URL
+  in [Google's Rich Results Test](https://search.google.com/test/rich-results)
+  to see it parsed.
+- **`sitemap.ts`** / **`robots.ts`** — already wired to the live catalogue.
+- **Analytics** — [Vercel Web Analytics](https://vercel.com/docs/analytics)
+  via `@vercel/analytics`. The `<Analytics />` component in the root layout
+  only activates on Vercel's production environment (it's intentionally
+  silent locally), so there's nothing to configure in code — just turn it on
+  once for the project: **Vercel dashboard → your project → Analytics tab →
+  Enable**. It's free on the Hobby plan up to a monthly event limit.
+
+---
+
 ## Scripts
 
 | Command | Does |
@@ -279,8 +303,10 @@ site.
 | CMS | ✅ Live — 12 pieces seeded |
 | Payments | ✅ Live (Stripe **test mode**) |
 | Enquiries | ✅ Live |
+| SEO structured data | ✅ Live |
+| Analytics | ✅ Code shipped — enable in the Vercel dashboard (see above) |
 | Custom domain | Owner-managed, not part of this repo's deploy |
 
 **Not yet built:** live (real-money) Stripe mode, the sold-item webhook,
-SEO structured data, analytics, and a few smaller polish items — see open
+"you may also like" on product pages, and a few smaller polish items — see open
 conversation / issues for the current list.
