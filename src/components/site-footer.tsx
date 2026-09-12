@@ -7,10 +7,10 @@ export function SiteFooter() {
     <footer className="border-t border-border bg-surface-muted">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-4">
         <div className="md:col-span-2">
-          <div className="flex items-center gap-2.5">
-            <DiamondMark className="h-6 w-6 text-accent" />
+          <Link href="/" className="group inline-flex items-center gap-2.5">
+            <DiamondMark className="h-6 w-6 text-accent transition-transform duration-300 group-hover:rotate-6" />
             <span className="font-display text-lg font-semibold">{SITE.name}</span>
-          </div>
+          </Link>
           <p className="mt-3 max-w-sm text-sm text-muted">{SITE.description}</p>
         </div>
 
@@ -34,22 +34,22 @@ export function SiteFooter() {
           <p className="eyebrow">Contact</p>
           <ul className="mt-3 space-y-2 text-sm text-muted">
             <li>
-              <a href={`mailto:${SITE.email}`} className="hover:text-accent">
+              <a href={`mailto:${SITE.email}`} className="transition-colors hover:text-accent">
                 {SITE.email}
               </a>
             </li>
             <li>
-              <a href={`tel:${SITE.phone.replace(/\s/g, "")}`} className="hover:text-accent">
+              <a href={`tel:${SITE.phone.replace(/\s/g, "")}`} className="transition-colors hover:text-accent">
                 {SITE.phone}
               </a>
             </li>
             <li>
-              <a href={SITE.whatsapp} className="hover:text-accent" target="_blank" rel="noreferrer">
+              <a href={SITE.whatsapp} className="transition-colors hover:text-accent" target="_blank" rel="noreferrer">
                 WhatsApp
               </a>
             </li>
             <li>
-              <Link href="/about" className="hover:text-accent">
+              <Link href="/about" className="transition-colors hover:text-accent">
                 About the collection
               </Link>
             </li>

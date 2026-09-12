@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { SITE } from "@/lib/site";
+import { DiamondMark } from "./logo";
 
 type Status = "idle" | "sending" | "sent" | "error" | "unavailable";
 
@@ -65,8 +66,9 @@ export function ContactForm({
 
   if (status === "sent") {
     return (
-      <div className="mt-10 rounded-lg border border-border bg-surface-muted p-6">
-        <p className="font-display text-xl">Message sent.</p>
+      <div className="hero-media mt-10 rounded-lg border border-border bg-surface-muted p-6">
+        <DiamondMark draw className="h-6 w-6 text-accent" />
+        <p className="mt-3 font-display text-xl">Message sent.</p>
         <p className="mt-2 text-sm text-muted">
           Thanks, {name.split(" ")[0]} — you&apos;ll hear back within one
           business day.
@@ -95,7 +97,7 @@ export function ContactForm({
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="mt-1.5 w-full rounded-md border border-border bg-surface px-3 py-2.5 outline-none focus:border-accent"
+            className="mt-1.5 w-full rounded-md border border-border bg-surface px-3 py-2.5 outline-none transition-shadow focus:border-accent focus:ring-4 focus:ring-accent/10"
           />
         </label>
         <label className="block text-sm">
@@ -105,7 +107,7 @@ export function ContactForm({
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="mt-1.5 w-full rounded-md border border-border bg-surface px-3 py-2.5 outline-none focus:border-accent"
+            className="mt-1.5 w-full rounded-md border border-border bg-surface px-3 py-2.5 outline-none transition-shadow focus:border-accent focus:ring-4 focus:ring-accent/10"
           />
         </label>
       </div>
@@ -118,7 +120,7 @@ export function ContactForm({
           rows={7}
           required
           placeholder="Tell us the occasion, a rough budget, and any preferences on shape or size."
-          className="mt-1.5 w-full rounded-md border border-border bg-surface px-3 py-2.5 outline-none focus:border-accent"
+          className="mt-1.5 w-full rounded-md border border-border bg-surface px-3 py-2.5 outline-none transition-shadow focus:border-accent focus:ring-4 focus:ring-accent/10"
         />
       </label>
 
@@ -134,7 +136,7 @@ export function ContactForm({
         <button
           type="submit"
           disabled={status === "sending"}
-          className="rounded-full bg-accent px-6 py-3 text-sm font-medium text-accent-contrast transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+          className="rounded-full bg-accent px-6 py-3 text-sm font-medium text-accent-contrast shadow-sm transition-all hover:-translate-y-0.5 hover:opacity-95 hover:shadow-md active:translate-y-0 disabled:pointer-events-none disabled:opacity-60 disabled:shadow-none"
         >
           {status === "sending" ? "Sending…" : "Send message"}
         </button>
@@ -142,14 +144,14 @@ export function ContactForm({
           href={whatsapp}
           target="_blank"
           rel="noreferrer"
-          className="rounded-full border border-border px-6 py-3 text-center text-sm transition-colors hover:border-accent"
+          className="rounded-full border border-border px-6 py-3 text-center text-sm transition-all hover:-translate-y-0.5 hover:border-accent active:translate-y-0"
         >
           Send on WhatsApp
         </a>
         {status === "unavailable" && (
           <a
             href={mailto}
-            className="rounded-full border border-border px-6 py-3 text-center text-sm transition-colors hover:border-accent"
+            className="rounded-full border border-border px-6 py-3 text-center text-sm transition-all hover:-translate-y-0.5 hover:border-accent active:translate-y-0"
           >
             Open in email app
           </a>
