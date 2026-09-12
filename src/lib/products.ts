@@ -64,3 +64,21 @@ export async function getProductsByIds(ids: string[]): Promise<Product[]> {
   const set = new Set(ids);
   return products.filter((p) => set.has(p.id));
 }
+
+/**
+ * "You may also like" — same category first (available before reserved
+ * before sold), then tops up with other pieces so it's never short.
+ */
+export async function getRelatedProducts(
+  product: Pick<Product, "id" | "category">,
+  limit = 3,
+): Promise<Product[]> {
+  const products = await loadProducts();
+  const rank = (p: Product) =>
+    (p.category === product.category ? 0 : 10) + statusRank[p.status];
+
+  return products
+    .filter((p) => p.id !== product.id)
+    .sort((a, b) => rank(a) - rank(b))
+    .slice(0, limit);
+}

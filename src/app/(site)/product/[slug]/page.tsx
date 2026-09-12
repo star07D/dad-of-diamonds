@@ -4,12 +4,14 @@ import { notFound } from "next/navigation";
 import {
   getAllProducts,
   getProductBySlug,
+  getRelatedProducts,
 } from "@/lib/products";
 import { formatPrice } from "@/lib/format";
 import { categoryLabel } from "@/lib/site";
 import { AddToCart } from "@/components/add-to-cart";
 import { StatusBadge } from "@/components/status-badge";
 import { ProductGallery } from "@/components/product-gallery";
+import { ProductCard } from "@/components/product-card";
 import { Reveal } from "@/components/reveal";
 import { JsonLd } from "@/components/json-ld";
 import { productJsonLd } from "@/lib/json-ld";
@@ -42,6 +44,8 @@ export default async function ProductPage({
   const { slug } = await params;
   const product = await getProductBySlug(slug);
   if (!product) notFound();
+
+  const related = await getRelatedProducts(product, 3);
 
   const specs: Array<[string, string | undefined]> = product.diamond
     ? [
@@ -116,6 +120,20 @@ export default async function ProductPage({
           </div>
         </Reveal>
       </div>
+
+      {related.length > 0 && (
+        <Reveal as="section" className="mt-20 border-t border-border pt-12">
+          <p className="eyebrow">You may also like</p>
+          <h2 className="mt-2 font-display text-2xl sm:text-3xl">
+            More from the collection
+          </h2>
+          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {related.map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))}
+          </div>
+        </Reveal>
+      )}
     </div>
   );
 }

@@ -307,6 +307,6 @@ site.
 | Analytics | ✅ Code shipped — enable in the Vercel dashboard (see above) |
 | Custom domain | Owner-managed, not part of this repo's deploy |
 
-**Not yet built:** live (real-money) Stripe mode, the sold-item webhook,
-"you may also like" on product pages, and a few smaller polish items — see open
+**Not yet built:** live (real-money) Stripe mode, the sold-item webhook, and a
+few smaller polish items — see open
 conversation / issues for the current list.
