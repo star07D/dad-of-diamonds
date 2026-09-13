@@ -14,8 +14,13 @@ jewellery — built with **Next.js 16**, **React 19**, **Tailwind CSS 4**,
 ## What's in the box
 
 - **Full storefront** — home, shop (filterable by category), product detail
-  (with "you may also like"), cart, about, contact. Every piece is one of a
-  kind: available / reserved / sold.
+  (with "you may also like"), cart, wishlist, about, contact. Every piece is
+  one of a kind: available / reserved / sold.
+- **Wishlist** — a heart on every product card and the product page saves a
+  piece to a `/wishlist` page (localStorage, synced across tabs), with a
+  live count badge in the header.
+- **Share** — WhatsApp, native share sheet (on supported devices), and copy
+  link on every product page.
 - **A real CMS** (Sanity, embedded at `/studio`) — add, edit and photograph
   pieces from a dashboard, no code. Falls back to sample data until it's
   connected, so the site is never broken.
@@ -113,12 +118,14 @@ src/
     sample-products.ts      Offline fallback catalogue
     types.ts                Product shape
     cart-context.tsx        localStorage cart (useSyncExternalStore)
+    wishlist-context.tsx    localStorage wishlist — same pattern as the cart
+    use-catalog.ts          Fetches /api/products — shared by cart + wishlist
     stripe.ts / resend.ts   Lazy clients — null until configured
     use-loupe.ts            Shared cursor-spotlight hook
     json-ld.ts              schema.org Product/Organization/WebSite builders
   components/               Header, footer, logo, cards, gallery, forms,
                              Reveal (scroll-in), Sparkles, HeroShowcase,
-                             JsonLd
+                             WishlistButton, ShareButtons, JsonLd
 scripts/
   seed-sanity.mts           Loads the 12 starter pieces + photos into Sanity
 public/products/            Starter product photography (licensed stock)
@@ -315,6 +322,8 @@ site.
 | Analytics | ✅ Code shipped — enable in the Vercel dashboard (see above) |
 | "You may also like" | ✅ Live |
 | Design polish (motion + visuals site-wide) | ✅ Live |
+| Wishlist | ✅ Live |
+| Share buttons | ✅ Live |
 | Custom domain | Owner-managed, not part of this repo's deploy |
 
 **Not yet built:** live (real-money) Stripe mode, and the sold-item webhook.

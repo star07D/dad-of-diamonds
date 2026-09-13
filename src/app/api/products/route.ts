@@ -2,20 +2,11 @@ import { NextResponse } from "next/server";
 import { getAllProducts } from "@/lib/products";
 
 /**
- * Public catalogue feed. Used by the client-side cart to resolve the ids it
- * keeps in localStorage into full product details.
+ * Public catalogue feed — the full Product shape. Used by the client-side
+ * cart and wishlist to resolve the ids they keep in localStorage into
+ * details they can render (reusing <ProductCard> etc. directly).
  */
 export async function GET() {
   const products = await getAllProducts();
-  return NextResponse.json(
-    products.map((p) => ({
-      id: p.id,
-      slug: p.slug,
-      name: p.name,
-      price: p.price,
-      status: p.status,
-      image: p.images[0]?.src ?? null,
-      summary: p.summary,
-    })),
-  );
+  return NextResponse.json(products);
 }

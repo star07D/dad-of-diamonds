@@ -1,41 +1,26 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useCart } from "@/lib/cart-context";
+import { useCatalog } from "@/lib/use-catalog";
 import { formatPrice } from "@/lib/format";
 import { DiamondMark } from "@/components/logo";
 import { Reveal } from "@/components/reveal";
-
-interface CatalogItem {
-  id: string;
-  slug: string;
-  name: string;
-  price: number;
-  status: "available" | "reserved" | "sold";
-  image: string | null;
-  summary: string;
-}
+import type { Product } from "@/lib/types";
 
 export default function CartPage() {
   const { lines, remove, clear, hydrated } = useCart();
-  const [catalog, setCatalog] = useState<CatalogItem[] | null>(null);
+  const { catalog, error: catalogError } = useCatalog();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [enquiry, setEnquiry] = useState(false);
-
-  useEffect(() => {
-    fetch("/api/products")
-      .then((r) => r.json())
-      .then(setCatalog)
-      .catch(() => setError("Could not load the catalogue. Please refresh."));
-  }, []);
 
   const items = useMemo(() => {
     if (!catalog) return [];
     return lines
       .map((l) => catalog.find((c) => c.id === l.id))
-      .filter((x): x is CatalogItem => Boolean(x));
+      .filter((x): x is Product => Boolean(x));
   }, [catalog, lines]);
 
   const total = items.reduce((sum, i) => sum + i.price, 0);
@@ -70,7 +55,7 @@ export default function CartPage() {
   if (!hydrated || catalog === null) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-20 sm:px-6">
-        <p className="text-muted">Loading your cart…</p>
+        <p className="text-muted">{catalogError ?? "Loading your cart…"}</p>
       </div>
     );
   }
@@ -107,9 +92,9 @@ export default function CartPage() {
                 href={`/product/${item.slug}`}
                 className="h-20 w-20 shrink-0 overflow-hidden rounded-md border border-border bg-surface-muted"
               >
-                {item.image && (
+                {item.images[0] && (
                   <img
-                    src={item.image}
+                    src={item.images[0].src}
                     alt={item.name}
                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />

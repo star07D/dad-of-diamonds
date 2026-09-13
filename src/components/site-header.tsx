@@ -4,7 +4,9 @@ import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { Logo } from "./logo";
+import { HeartIcon } from "./heart-icon";
 import { useCart } from "@/lib/cart-context";
+import { useWishlist } from "@/lib/wishlist-context";
 import { CATEGORIES } from "@/lib/site";
 
 const NAV = [
@@ -15,6 +17,7 @@ const NAV = [
 
 export function SiteHeader() {
   const { count, hydrated } = useCart();
+  const wishlist = useWishlist();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
@@ -38,6 +41,18 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-3">
+          <Link
+            href="/wishlist"
+            aria-label="Wishlist"
+            className="relative inline-flex h-9 w-9 items-center justify-center rounded-full border border-border transition-colors hover:border-accent hover:text-accent"
+          >
+            <HeartIcon className="h-4 w-4" />
+            {wishlist.hydrated && wishlist.count > 0 && (
+              <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[10px] font-medium leading-none text-accent-contrast">
+                {wishlist.count}
+              </span>
+            )}
+          </Link>
           <Link
             href="/cart"
             className="relative inline-flex items-center gap-2 rounded-full border border-border px-3.5 py-1.5 text-sm transition-colors hover:border-accent hover:text-accent"
