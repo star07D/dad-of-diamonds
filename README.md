@@ -13,9 +13,10 @@ jewellery — built with **Next.js 16**, **React 19**, **Tailwind CSS 4**,
 
 ## What's in the box
 
-- **Full storefront** — home, shop (filterable by category), product detail
-  (with "you may also like"), cart, wishlist, about, contact. Every piece is
-  one of a kind: available / reserved / sold.
+- **Full storefront** — home, shop (filterable by category, sortable by
+  price/carat), product detail (with "you may also like"), cart, wishlist,
+  about, contact, and a diamond-buying guide. Every piece is one of a kind:
+  available / reserved / sold.
 - **Wishlist** — a heart on every product card and the product page saves a
   piece to a `/wishlist` page (localStorage, synced across tabs), with a
   live count badge in the header.
@@ -25,6 +26,9 @@ jewellery — built with **Next.js 16**, **React 19**, **Tailwind CSS 4**,
   keyboard (Esc / arrow keys) and on-screen navigation between shots.
 - **New-arrivals signup** — a footer email capture that notifies the shop
   owner of every subscriber via the same Resend pipeline as enquiries.
+- **Diamond guide** — a plain-English "Understanding the 4 Cs" page
+  (carat/cut/colour/clarity + why certification matters), linked from the
+  footer and from every diamond's spec table.
 - **A real CMS** (Sanity, embedded at `/studio`) — add, edit and photograph
   pieces from a dashboard, no code. Falls back to sample data until it's
   connected, so the site is never broken.
@@ -99,11 +103,12 @@ src/
   app/
     (site)/                 Every page that shares the header/footer
       page.tsx                Home
-      shop/                   Listing + ?category= filter
+      shop/                   Listing + ?category= filter, ?sort=
       product/[slug]/         Product detail
       cart/                   Cart (client) → POST /api/checkout
       success/                Post-payment confirmation
       about/  contact/        Static pages
+      guide/                  "Understanding the 4 Cs" diamond guide
     studio/[[...tool]]/     Embedded Sanity Studio at /studio
     api/
       products/route.ts      Public catalogue feed (used by the cart)
@@ -119,7 +124,7 @@ src/
   lib/
     site.ts                 Brand name, contact details, categories  ← edit this
     products.ts             The ONLY place that reads the catalogue
-                             (incl. getRelatedProducts for "you may also like")
+                             (incl. getRelatedProducts, sortProducts)
     sample-products.ts      Offline fallback catalogue
     types.ts                Product shape
     cart-context.tsx        localStorage cart (useSyncExternalStore)
@@ -131,7 +136,7 @@ src/
   components/               Header, footer, logo, cards, gallery, forms,
                              Reveal (scroll-in), Sparkles, HeroShowcase,
                              WishlistButton, ShareButtons, Lightbox,
-                             NotifyForm, JsonLd
+                             NotifyForm, SortSelect, JsonLd
 scripts/
   seed-sanity.mts           Loads the 12 starter pieces + photos into Sanity
 public/products/            Starter product photography (licensed stock)
@@ -332,6 +337,8 @@ site.
 | Share buttons | ✅ Live |
 | Photo lightbox | ✅ Live |
 | New-arrivals signup | ✅ Live |
+| Shop sort (price/carat) | ✅ Live |
+| Diamond guide (4 Cs) | ✅ Live |
 | Custom domain | Owner-managed, not part of this repo's deploy |
 
 **Not yet built:** live (real-money) Stripe mode, and the sold-item webhook.

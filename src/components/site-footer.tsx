@@ -64,6 +64,11 @@ export function SiteFooter() {
                 About the collection
               </Link>
             </li>
+            <li>
+              <Link href="/guide" className="transition-colors hover:text-accent">
+                Understanding the 4 Cs
+              </Link>
+            </li>
           </ul>
         </div>
       </div>

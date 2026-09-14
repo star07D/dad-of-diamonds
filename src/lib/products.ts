@@ -31,6 +31,28 @@ const statusRank: Record<Product["status"], number> = {
   sold: 2,
 };
 
+const SORTERS = {
+  "price-asc": (a: Product, b: Product) => a.price - b.price,
+  "price-desc": (a: Product, b: Product) => b.price - a.price,
+  "carat-desc": (a: Product, b: Product) =>
+    (b.diamond?.carat ?? 0) - (a.diamond?.carat ?? 0),
+} satisfies Record<string, (a: Product, b: Product) => number>;
+
+export type SortOption = "featured" | keyof typeof SORTERS;
+
+/**
+ * Applies a sort on top of whatever order the products arrived in.
+ * Available-before-reserved-before-sold always wins first, so a chosen sort
+ * never surfaces a sold piece above an available one.
+ */
+export function sortProducts(products: Product[], sort?: string): Product[] {
+  const sorter = sort && sort in SORTERS ? SORTERS[sort as keyof typeof SORTERS] : null;
+  if (!sorter) return products;
+  return [...products].sort(
+    (a, b) => statusRank[a.status] - statusRank[b.status] || sorter(a, b),
+  );
+}
+
 export async function getAllProducts(): Promise<Product[]> {
   const products = await loadProducts();
   return [...products].sort(

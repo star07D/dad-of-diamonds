@@ -110,16 +110,26 @@ export default async function ProductPage({
           </div>
 
           {specs.length > 0 && (
-            <dl className="mt-10 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-border pt-8">
-              {specs
-                .filter(([, value]) => value)
-                .map(([label, value]) => (
-                  <div key={label}>
-                    <dt className="eyebrow">{label}</dt>
-                    <dd className="mt-1 text-sm">{value}</dd>
-                  </div>
-                ))}
-            </dl>
+            <div className="mt-10 border-t border-border pt-8">
+              <dl className="grid grid-cols-2 gap-x-6 gap-y-4">
+                {specs
+                  .filter(([, value]) => value)
+                  .map(([label, value]) => (
+                    <div key={label}>
+                      <dt className="eyebrow">{label}</dt>
+                      <dd className="mt-1 text-sm">{value}</dd>
+                    </div>
+                  ))}
+              </dl>
+              {product.diamond && (
+                <Link
+                  href="/guide"
+                  className="mt-5 inline-block text-xs text-muted underline underline-offset-4 transition-colors hover:text-accent"
+                >
+                  What do these mean? — the 4 Cs explained
+                </Link>
+              )}
+            </div>
           )}
 
           <div className="mt-10 border-t border-border pt-8">

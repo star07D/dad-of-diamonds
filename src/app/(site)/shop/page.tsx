@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getAllProducts, getProductsByCategory } from "@/lib/products";
+import { Suspense } from "react";
+import { getAllProducts, getProductsByCategory, sortProducts } from "@/lib/products";
 import { ProductCard } from "@/components/product-card";
 import { Reveal } from "@/components/reveal";
 import { DiamondMark } from "@/components/logo";
+import { SortSelect } from "@/components/sort-select";
 import { CATEGORIES, categoryLabel } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -18,10 +20,12 @@ export default async function ShopPage({
   const params = await searchParams;
   const active =
     typeof params.category === "string" ? params.category : undefined;
+  const sort = typeof params.sort === "string" ? params.sort : undefined;
 
-  const products = active
+  const unsorted = active
     ? await getProductsByCategory(active)
     : await getAllProducts();
+  const products = sortProducts(unsorted, sort);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
@@ -35,16 +39,29 @@ export default async function ShopPage({
           confirm the piece is held for you.
         </p>
 
-        <div className="mt-8 flex flex-wrap gap-2">
-          <FilterPill href="/shop" label="All" active={!active} />
-          {CATEGORIES.map((c) => (
+        <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
+          <div className="flex flex-wrap gap-2">
             <FilterPill
-              key={c.slug}
-              href={`/shop?category=${c.slug}`}
-              label={c.label}
-              active={active === c.slug}
+              href={sort ? `/shop?sort=${sort}` : "/shop"}
+              label="All"
+              active={!active}
             />
-          ))}
+            {CATEGORIES.map((c) => (
+              <FilterPill
+                key={c.slug}
+                href={
+                  sort
+                    ? `/shop?category=${c.slug}&sort=${sort}`
+                    : `/shop?category=${c.slug}`
+                }
+                label={c.label}
+                active={active === c.slug}
+              />
+            ))}
+          </div>
+          <Suspense fallback={null}>
+            <SortSelect />
+          </Suspense>
         </div>
       </Reveal>
 
