@@ -21,6 +21,10 @@ jewellery — built with **Next.js 16**, **React 19**, **Tailwind CSS 4**,
   live count badge in the header.
 - **Share** — WhatsApp, native share sheet (on supported devices), and copy
   link on every product page.
+- **Photo lightbox** — click any product photo for a full-screen view, with
+  keyboard (Esc / arrow keys) and on-screen navigation between shots.
+- **New-arrivals signup** — a footer email capture that notifies the shop
+  owner of every subscriber via the same Resend pipeline as enquiries.
 - **A real CMS** (Sanity, embedded at `/studio`) — add, edit and photograph
   pieces from a dashboard, no code. Falls back to sample data until it's
   connected, so the site is never broken.
@@ -105,6 +109,7 @@ src/
       products/route.ts      Public catalogue feed (used by the cart)
       checkout/route.ts      Creates the Stripe Checkout session
       enquiry/route.ts       Sends contact-form / cart enquiries via Resend
+      subscribe/route.ts     Sends new-arrivals signups via Resend
     layout.tsx              Root layout (fonts, metadata) — no header/footer
     globals.css             Theme tokens + all motion/animation CSS
   sanity/
@@ -125,7 +130,8 @@ src/
     json-ld.ts              schema.org Product/Organization/WebSite builders
   components/               Header, footer, logo, cards, gallery, forms,
                              Reveal (scroll-in), Sparkles, HeroShowcase,
-                             WishlistButton, ShareButtons, JsonLd
+                             WishlistButton, ShareButtons, Lightbox,
+                             NotifyForm, JsonLd
 scripts/
   seed-sanity.mts           Loads the 12 starter pieces + photos into Sanity
 public/products/            Starter product photography (licensed stock)
@@ -324,6 +330,8 @@ site.
 | Design polish (motion + visuals site-wide) | ✅ Live |
 | Wishlist | ✅ Live |
 | Share buttons | ✅ Live |
+| Photo lightbox | ✅ Live |
+| New-arrivals signup | ✅ Live |
 | Custom domain | Owner-managed, not part of this repo's deploy |
 
 **Not yet built:** live (real-money) Stripe mode, and the sold-item webhook.

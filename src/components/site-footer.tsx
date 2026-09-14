@@ -1,10 +1,21 @@
 import Link from "next/link";
 import { DiamondMark } from "./logo";
+import { NotifyForm } from "./notify-form";
 import { SITE, CATEGORIES } from "@/lib/site";
 
 export function SiteFooter() {
   return (
     <footer className="border-t border-border bg-surface-muted">
+      <div className="border-b border-border">
+        <div className="mx-auto flex max-w-6xl flex-col items-start gap-4 px-4 py-10 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+          <div>
+            <p className="eyebrow">New arrivals</p>
+            <p className="mt-1 font-display text-xl">Be first to see new pieces</p>
+          </div>
+          <NotifyForm />
+        </div>
+      </div>
+
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-4">
         <div className="md:col-span-2">
           <Link href="/" className="group inline-flex items-center gap-2.5">
