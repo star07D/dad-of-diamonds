@@ -29,6 +29,10 @@ jewellery — built with **Next.js 16**, **React 19**, **Tailwind CSS 4**,
 - **Diamond guide** — a plain-English "Understanding the 4 Cs" page
   (carat/cut/colour/clarity + why certification matters), linked from the
   footer and from every diamond's spec table.
+- **Search** — a header search box with live suggestions (name, summary,
+  category) as you type, and a full results page at `/shop?q=`.
+- **Trust badges** — certified / secure checkout / insured delivery, shown
+  next to the buy buttons on every product page and in the footer.
 - **A real CMS** (Sanity, embedded at `/studio`) — add, edit and photograph
   pieces from a dashboard, no code. Falls back to sample data until it's
   connected, so the site is never broken.
@@ -103,7 +107,7 @@ src/
   app/
     (site)/                 Every page that shares the header/footer
       page.tsx                Home
-      shop/                   Listing + ?category= filter, ?sort=
+      shop/                   Listing + ?category= filter, ?sort=, ?q= search
       product/[slug]/         Product detail
       cart/                   Cart (client) → POST /api/checkout
       success/                Post-payment confirmation
@@ -125,18 +129,21 @@ src/
     site.ts                 Brand name, contact details, categories  ← edit this
     products.ts             The ONLY place that reads the catalogue
                              (incl. getRelatedProducts, sortProducts)
+    search.ts                searchProducts — pure, used server + client
     sample-products.ts      Offline fallback catalogue
     types.ts                Product shape
     cart-context.tsx        localStorage cart (useSyncExternalStore)
     wishlist-context.tsx    localStorage wishlist — same pattern as the cart
-    use-catalog.ts          Fetches /api/products — shared by cart + wishlist
+    use-catalog.ts          Fetches /api/products — shared by cart, wishlist
+                             and the header search box
     stripe.ts / resend.ts   Lazy clients — null until configured
     use-loupe.ts            Shared cursor-spotlight hook
     json-ld.ts              schema.org Product/Organization/WebSite builders
   components/               Header, footer, logo, cards, gallery, forms,
                              Reveal (scroll-in), Sparkles, HeroShowcase,
                              WishlistButton, ShareButtons, Lightbox,
-                             NotifyForm, SortSelect, JsonLd
+                             NotifyForm, SortSelect, SearchBox,
+                             TrustBadges, JsonLd
 scripts/
   seed-sanity.mts           Loads the 12 starter pieces + photos into Sanity
 public/products/            Starter product photography (licensed stock)
@@ -339,6 +346,8 @@ site.
 | New-arrivals signup | ✅ Live |
 | Shop sort (price/carat) | ✅ Live |
 | Diamond guide (4 Cs) | ✅ Live |
+| Search | ✅ Live |
+| Trust badges | ✅ Live |
 | Custom domain | Owner-managed, not part of this repo's deploy |
 
 **Not yet built:** live (real-money) Stripe mode, and the sold-item webhook.

@@ -5,6 +5,7 @@ import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { Logo } from "./logo";
 import { HeartIcon } from "./heart-icon";
+import { SearchBox } from "./search-box";
 import { useCart } from "@/lib/cart-context";
 import { useWishlist } from "@/lib/wishlist-context";
 import { CATEGORIES } from "@/lib/site";
@@ -41,6 +42,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-3">
+          <SearchBox />
           <Link
             href="/wishlist"
             aria-label="Wishlist"

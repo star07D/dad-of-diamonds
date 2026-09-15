@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { DiamondMark } from "./logo";
 import { NotifyForm } from "./notify-form";
+import { TrustBadges } from "./trust-badges";
 import { SITE, CATEGORIES } from "@/lib/site";
 
 export function SiteFooter() {
@@ -23,6 +24,7 @@ export function SiteFooter() {
             <span className="font-display text-lg font-semibold">{SITE.name}</span>
           </Link>
           <p className="mt-3 max-w-sm text-sm text-muted">{SITE.description}</p>
+          <TrustBadges className="mt-5" />
         </div>
 
         <div>

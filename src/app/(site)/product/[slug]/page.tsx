@@ -14,6 +14,7 @@ import { ProductGallery } from "@/components/product-gallery";
 import { ProductCard } from "@/components/product-card";
 import { WishlistButton } from "@/components/wishlist-button";
 import { ShareButtons } from "@/components/share-buttons";
+import { TrustBadges } from "@/components/trust-badges";
 import { Reveal } from "@/components/reveal";
 import { JsonLd } from "@/components/json-ld";
 import { productJsonLd } from "@/lib/json-ld";
@@ -100,6 +101,8 @@ export default async function ProductPage({
           <div className="mt-8">
             <AddToCart product={product} />
           </div>
+
+          <TrustBadges className="mt-5" />
 
           <div className="mt-5 flex flex-wrap items-center justify-between gap-4">
             <WishlistButton productId={product.id} variant="button" />
