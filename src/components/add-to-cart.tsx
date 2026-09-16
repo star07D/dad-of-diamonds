@@ -55,7 +55,13 @@ export function AddToCart({ product }: { product: Product }) {
       </div>
       <p className="text-sm text-muted">
         Secure checkout via Stripe. Each piece is one of a kind — reserving holds
-        it for you while payment is confirmed.
+        it for you while payment is confirmed.{" "}
+        <Link
+          href={`/contact?items=${product.slug}&intent=offer`}
+          className="text-accent underline underline-offset-4"
+        >
+          Prefer to negotiate? Make an offer.
+        </Link>
       </p>
     </div>
   );

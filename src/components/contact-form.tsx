@@ -8,16 +8,22 @@ type Status = "idle" | "sending" | "sent" | "error" | "unavailable";
 
 export function ContactForm({
   prefilledItems = [],
+  intent,
 }: {
   prefilledItems?: string[];
+  intent?: "offer";
 }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState(
     prefilledItems.length
-      ? `I'm interested in the following piece(s):\n${prefilledItems
-          .map((s) => `- ${SITE.url}/product/${s}`)
-          .join("\n")}\n\n`
+      ? intent === "offer"
+        ? `I'd like to make an offer on:\n${prefilledItems
+            .map((s) => `- ${SITE.url}/product/${s}`)
+            .join("\n")}\n\nMy offer: $\n\n`
+        : `I'm interested in the following piece(s):\n${prefilledItems
+            .map((s) => `- ${SITE.url}/product/${s}`)
+            .join("\n")}\n\n`
       : "",
   );
   const [status, setStatus] = useState<Status>("idle");
@@ -30,7 +36,11 @@ export function ContactForm({
   );
   const whatsapp = `${SITE.whatsapp}?text=${whatsappText}`;
   const mailto = `mailto:${SITE.email}?subject=${encodeURIComponent(
-    prefilledItems.length ? "Enquiry about a piece" : "Enquiry — Dad of Diamonds",
+    intent === "offer"
+      ? "Offer on a piece"
+      : prefilledItems.length
+        ? "Enquiry about a piece"
+        : "Enquiry — Dad of Diamonds",
   )}&body=${whatsappText}`;
 
   async function onSubmit(e: React.FormEvent) {
@@ -46,6 +56,7 @@ export function ContactForm({
           email,
           message,
           items: prefilledItems,
+          intent,
           startedAt,
         }),
       });

@@ -7,6 +7,7 @@ interface Body {
   email?: unknown;
   message?: unknown;
   items?: unknown;
+  intent?: unknown;
   /** honeypot — real visitors never fill this in */
   company?: unknown;
   /** ms since the form was rendered — filters instant bot submits */
@@ -36,6 +37,7 @@ export async function POST(request: Request) {
   const items = Array.isArray(body.items)
     ? body.items.filter((x): x is string => typeof x === "string").slice(0, 20)
     : [];
+  const isOffer = body.intent === "offer";
 
   if (!name || !email || !message) {
     return NextResponse.json(
@@ -65,7 +67,7 @@ export async function POST(request: Request) {
     .join("\n");
 
   const text = [
-    `New enquiry from the website`,
+    isOffer ? `New offer from the website` : `New enquiry from the website`,
     ``,
     `Name: ${name}`,
     `Email: ${email}`,
@@ -82,7 +84,11 @@ export async function POST(request: Request) {
       from: RESEND_FROM,
       to: SITE.email,
       replyTo: email,
-      subject: items.length ? "Enquiry about a piece" : `Enquiry from ${name}`,
+      subject: isOffer
+        ? "Offer on a piece"
+        : items.length
+          ? "Enquiry about a piece"
+          : `Enquiry from ${name}`,
       text,
     });
     if (error) {

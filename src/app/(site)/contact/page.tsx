@@ -3,6 +3,8 @@ import { ContactForm } from "@/components/contact-form";
 import { DiamondMark } from "@/components/logo";
 import { Reveal } from "@/components/reveal";
 import { SITE } from "@/lib/site";
+import { getProductBySlug } from "@/lib/products";
+import { formatPrice } from "@/lib/format";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -18,6 +20,11 @@ export default async function ContactPage({
     typeof params.items === "string"
       ? params.items.split(",").filter(Boolean)
       : [];
+  const intent = params.intent === "offer" ? "offer" : undefined;
+  const offerProduct =
+    intent === "offer" && items.length === 1
+      ? await getProductBySlug(items[0])
+      : undefined;
 
   return (
     <div className="relative mx-auto max-w-2xl overflow-hidden px-4 py-16 sm:px-6">
@@ -47,8 +54,26 @@ export default async function ContactPage({
         </p>
       </Reveal>
 
+      {offerProduct && (
+        <Reveal
+          delay={60}
+          className="mt-6 flex items-center gap-3 rounded-lg border border-border bg-surface-muted p-3"
+        >
+          <img
+            src={offerProduct.images[0]?.src}
+            alt=""
+            className="h-14 w-14 shrink-0 rounded object-cover"
+          />
+          <div className="min-w-0">
+            <p className="eyebrow">Making an offer on</p>
+            <p className="truncate text-sm font-medium">{offerProduct.name}</p>
+            <p className="text-sm text-muted">{formatPrice(offerProduct.price)}</p>
+          </div>
+        </Reveal>
+      )}
+
       <Reveal delay={90}>
-        <ContactForm prefilledItems={items} />
+        <ContactForm prefilledItems={items} intent={intent} />
       </Reveal>
     </div>
   );

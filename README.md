@@ -33,6 +33,12 @@ jewellery — built with **Next.js 16**, **React 19**, **Tailwind CSS 4**,
   category) as you type, and a full results page at `/shop?q=`.
 - **Trust badges** — certified / secure checkout / insured delivery, shown
   next to the buy buttons on every product page and in the footer.
+- **Make an offer** — a negotiate link next to Reserve/Add to cart that opens
+  the enquiry form pre-filled with the piece and a place to name a price.
+- **Testimonials** — a homepage section for client quotes. Ships with
+  bracketed placeholder copy (`[Add a client quote here]`) — replace with
+  real feedback before relying on it as social proof; see [Add real
+  testimonials](#add-real-testimonials) below.
 - **A real CMS** (Sanity, embedded at `/studio`) — add, edit and photograph
   pieces from a dashboard, no code. Falls back to sample data until it's
   connected, so the site is never broken.
@@ -117,7 +123,8 @@ src/
     api/
       products/route.ts      Public catalogue feed (used by the cart)
       checkout/route.ts      Creates the Stripe Checkout session
-      enquiry/route.ts       Sends contact-form / cart enquiries via Resend
+      enquiry/route.ts       Sends contact-form / cart / offer enquiries via
+                             Resend
       subscribe/route.ts     Sends new-arrivals signups via Resend
     layout.tsx              Root layout (fonts, metadata) — no header/footer
     globals.css             Theme tokens + all motion/animation CSS
@@ -143,7 +150,7 @@ src/
                              Reveal (scroll-in), Sparkles, HeroShowcase,
                              WishlistButton, ShareButtons, Lightbox,
                              NotifyForm, SortSelect, SearchBox,
-                             TrustBadges, JsonLd
+                             TrustBadges, Testimonials, JsonLd
 scripts/
   seed-sanity.mts           Loads the 12 starter pieces + photos into Sanity
 public/products/            Starter product photography (licensed stock)
@@ -215,6 +222,25 @@ To send from your own domain later (e.g. `enquiries@dadofdiamonds.com`
 instead of `onboarding@resend.dev`) and deliver to any address: verify the
 domain under **Domains** in Resend, then set `RESEND_FROM` in Vercel to
 `Dad of Diamonds <enquiries@yourdomain.com>`.
+
+---
+
+## Add real testimonials
+
+The homepage's "What clients say" section (`src/components/testimonials.tsx`)
+ships with three placeholder entries, deliberately written in brackets —
+`[Add a client quote here]` — so it's obvious the copy is unfinished rather
+than reading as a genuine review if it's ever seen live. Nothing was
+invented: no fake names or quotes were written in, because presenting made-up
+reviews as real would be misleading to buyers on a site selling four- and
+five-figure pieces.
+
+To make it real, open `src/components/testimonials.tsx` and edit the
+`TESTIMONIALS` array — each entry is just `{ quote, name, detail }`. Good
+sources: a WhatsApp or email message from a past buyer (ask permission to
+quote them), or a short line dictated over a call. First name + last initial
+(e.g. `"Sarah M."`) is the usual convention if a client would rather not use
+their full name.
 
 ---
 
@@ -348,6 +374,8 @@ site.
 | Diamond guide (4 Cs) | ✅ Live |
 | Search | ✅ Live |
 | Trust badges | ✅ Live |
+| Make an offer | ✅ Live |
+| Testimonials | ⚠️ Placeholder copy — needs real client quotes |
 | Custom domain | Owner-managed, not part of this repo's deploy |
 
 **Not yet built:** live (real-money) Stripe mode, and the sold-item webhook.

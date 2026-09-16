@@ -5,6 +5,7 @@ import { DiamondMark } from "@/components/logo";
 import { Reveal } from "@/components/reveal";
 import { HeroShowcase } from "@/components/hero-showcase";
 import { Sparkles } from "@/components/sparkles";
+import { Testimonials } from "@/components/testimonials";
 import { CATEGORIES } from "@/lib/site";
 
 export default async function HomePage() {
@@ -126,6 +127,8 @@ export default async function HomePage() {
           ))}
         </div>
       </section>
+
+      <Testimonials />
 
       {/* CTA */}
       <section className="relative overflow-hidden">
