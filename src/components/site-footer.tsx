@@ -71,6 +71,11 @@ export function SiteFooter() {
                 Understanding the 4 Cs
               </Link>
             </li>
+            <li>
+              <Link href="/faq" className="transition-colors hover:text-accent">
+                FAQ
+              </Link>
+            </li>
           </ul>
         </div>
       </div>

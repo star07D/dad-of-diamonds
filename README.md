@@ -39,6 +39,10 @@ jewellery — built with **Next.js 16**, **React 19**, **Tailwind CSS 4**,
   bracketed placeholder copy (`[Add a client quote here]`) — replace with
   real feedback before relying on it as social proof; see [Add real
   testimonials](#add-real-testimonials) below.
+- **Recently viewed** — a homepage strip of pieces the visitor already
+  looked at (localStorage, same pattern as the cart and wishlist).
+- **FAQ** — certification, reserving, delivery, resizing, returns — answers
+  to the questions most likely to block a purchase, at `/faq`.
 - **A real CMS** (Sanity, embedded at `/studio`) — add, edit and photograph
   pieces from a dashboard, no code. Falls back to sample data until it's
   connected, so the site is never broken.
@@ -119,6 +123,7 @@ src/
       success/                Post-payment confirmation
       about/  contact/        Static pages
       guide/                  "Understanding the 4 Cs" diamond guide
+      faq/                    Certification, delivery, resizing, returns
     studio/[[...tool]]/     Embedded Sanity Studio at /studio
     api/
       products/route.ts      Public catalogue feed (used by the cart)
@@ -141,6 +146,7 @@ src/
     types.ts                Product shape
     cart-context.tsx        localStorage cart (useSyncExternalStore)
     wishlist-context.tsx    localStorage wishlist — same pattern as the cart
+    recently-viewed-context.tsx  localStorage view history — same pattern
     use-catalog.ts          Fetches /api/products — shared by cart, wishlist
                              and the header search box
     stripe.ts / resend.ts   Lazy clients — null until configured
@@ -150,7 +156,8 @@ src/
                              Reveal (scroll-in), Sparkles, HeroShowcase,
                              WishlistButton, ShareButtons, Lightbox,
                              NotifyForm, SortSelect, SearchBox,
-                             TrustBadges, Testimonials, JsonLd
+                             TrustBadges, Testimonials, RecentlyViewed,
+                             RecordView, JsonLd
 scripts/
   seed-sanity.mts           Loads the 12 starter pieces + photos into Sanity
 public/products/            Starter product photography (licensed stock)
@@ -376,6 +383,8 @@ site.
 | Trust badges | ✅ Live |
 | Make an offer | ✅ Live |
 | Testimonials | ⚠️ Placeholder copy — needs real client quotes |
+| Recently viewed | ✅ Live |
+| FAQ | ✅ Live |
 | Custom domain | Owner-managed, not part of this repo's deploy |
 
 **Not yet built:** live (real-money) Stripe mode, and the sold-item webhook.

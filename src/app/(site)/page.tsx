@@ -6,6 +6,7 @@ import { Reveal } from "@/components/reveal";
 import { HeroShowcase } from "@/components/hero-showcase";
 import { Sparkles } from "@/components/sparkles";
 import { Testimonials } from "@/components/testimonials";
+import { RecentlyViewed } from "@/components/recently-viewed";
 import { CATEGORIES } from "@/lib/site";
 
 export default async function HomePage() {
@@ -102,6 +103,8 @@ export default async function HomePage() {
           </div>
         </section>
       )}
+
+      <RecentlyViewed />
 
       {/* Trust */}
       <section className="border-y border-border bg-surface-muted">
