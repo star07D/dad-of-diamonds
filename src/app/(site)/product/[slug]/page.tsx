@@ -13,6 +13,7 @@ import { StatusBadge } from "@/components/status-badge";
 import { ProductGallery } from "@/components/product-gallery";
 import { ProductCard } from "@/components/product-card";
 import { WishlistButton } from "@/components/wishlist-button";
+import { CompareButton } from "@/components/compare-button";
 import { ShareButtons } from "@/components/share-buttons";
 import { TrustBadges } from "@/components/trust-badges";
 import { RecordView } from "@/components/record-view";
@@ -107,7 +108,12 @@ export default async function ProductPage({
           <TrustBadges className="mt-5" />
 
           <div className="mt-5 flex flex-wrap items-center justify-between gap-4">
-            <WishlistButton productId={product.id} variant="button" />
+            <div className="flex flex-wrap items-center gap-3">
+              <WishlistButton productId={product.id} variant="button" />
+              {product.diamond && (
+                <CompareButton productId={product.id} variant="button" />
+              )}
+            </div>
             <ShareButtons
               title={product.name}
               url={`${SITE.url}/product/${product.slug}`}
@@ -126,14 +132,24 @@ export default async function ProductPage({
                     </div>
                   ))}
               </dl>
-              {product.diamond && (
-                <Link
-                  href="/guide"
-                  className="mt-5 inline-block text-xs text-muted underline underline-offset-4 transition-colors hover:text-accent"
-                >
-                  What do these mean? — the 4 Cs explained
-                </Link>
-              )}
+              <div className="mt-5 flex flex-col items-start gap-1.5">
+                {product.diamond && (
+                  <Link
+                    href="/guide"
+                    className="text-xs text-muted underline underline-offset-4 transition-colors hover:text-accent"
+                  >
+                    What do these mean? — the 4 Cs explained
+                  </Link>
+                )}
+                {product.category === "rings" && (
+                  <Link
+                    href="/size-guide"
+                    className="text-xs text-muted underline underline-offset-4 transition-colors hover:text-accent"
+                  >
+                    Not sure of your size? — ring size guide
+                  </Link>
+                )}
+              </div>
             </div>
           )}
 

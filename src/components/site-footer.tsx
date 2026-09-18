@@ -76,6 +76,11 @@ export function SiteFooter() {
                 FAQ
               </Link>
             </li>
+            <li>
+              <Link href="/size-guide" className="transition-colors hover:text-accent">
+                Ring size guide
+              </Link>
+            </li>
           </ul>
         </div>
       </div>

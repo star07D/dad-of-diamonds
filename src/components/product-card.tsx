@@ -3,6 +3,7 @@ import type { Product } from "@/lib/types";
 import { formatPrice } from "@/lib/format";
 import { StatusBadge } from "./status-badge";
 import { WishlistButton } from "./wishlist-button";
+import { CompareButton } from "./compare-button";
 
 export function ProductCard({ product }: { product: Product }) {
   const image = product.images[0];
@@ -42,6 +43,12 @@ export function ProductCard({ product }: { product: Product }) {
         productId={product.id}
         className="absolute right-3 top-3 z-10"
       />
+      {product.diamond && (
+        <CompareButton
+          productId={product.id}
+          className="absolute right-3 top-14 z-10"
+        />
+      )}
     </div>
   );
 }

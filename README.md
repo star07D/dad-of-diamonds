@@ -43,6 +43,12 @@ jewellery — built with **Next.js 16**, **React 19**, **Tailwind CSS 4**,
   looked at (localStorage, same pattern as the cart and wishlist).
 - **FAQ** — certification, reserving, delivery, resizing, returns — answers
   to the questions most likely to block a purchase, at `/faq`.
+- **Diamond comparison** — a compare icon on every diamond's card (and a
+  button on its product page) adds it to a floating tray, up to 3 at a
+  time, with a `/compare` page showing price/carat/cut/colour/clarity/
+  certificate side by side.
+- **Ring size guide** — a US/UK/EU conversion chart plus two ways to
+  measure at home, at `/size-guide`, linked from the FAQ and every ring.
 - **A real CMS** (Sanity, embedded at `/studio`) — add, edit and photograph
   pieces from a dashboard, no code. Falls back to sample data until it's
   connected, so the site is never broken.
@@ -124,6 +130,8 @@ src/
       about/  contact/        Static pages
       guide/                  "Understanding the 4 Cs" diamond guide
       faq/                    Certification, delivery, resizing, returns
+      compare/                Client page — side-by-side diamond comparison
+      size-guide/             Ring size conversion chart + measuring tips
     studio/[[...tool]]/     Embedded Sanity Studio at /studio
     api/
       products/route.ts      Public catalogue feed (used by the cart)
@@ -147,6 +155,8 @@ src/
     cart-context.tsx        localStorage cart (useSyncExternalStore)
     wishlist-context.tsx    localStorage wishlist — same pattern as the cart
     recently-viewed-context.tsx  localStorage view history — same pattern
+    compare-context.tsx     localStorage compare list, capped at 3 — same
+                             pattern
     use-catalog.ts          Fetches /api/products — shared by cart, wishlist
                              and the header search box
     stripe.ts / resend.ts   Lazy clients — null until configured
@@ -157,7 +167,8 @@ src/
                              WishlistButton, ShareButtons, Lightbox,
                              NotifyForm, SortSelect, SearchBox,
                              TrustBadges, Testimonials, RecentlyViewed,
-                             RecordView, JsonLd
+                             RecordView, CompareButton, CompareTray,
+                             JsonLd
 scripts/
   seed-sanity.mts           Loads the 12 starter pieces + photos into Sanity
 public/products/            Starter product photography (licensed stock)
@@ -385,6 +396,8 @@ site.
 | Testimonials | ⚠️ Placeholder copy — needs real client quotes |
 | Recently viewed | ✅ Live |
 | FAQ | ✅ Live |
+| Diamond comparison | ✅ Live |
+| Ring size guide | ✅ Live |
 | Custom domain | Owner-managed, not part of this repo's deploy |
 
 **Not yet built:** live (real-money) Stripe mode, and the sold-item webhook.

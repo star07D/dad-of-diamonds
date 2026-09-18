@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     "Answers to common questions about certification, reserving a piece, delivery, resizing, and more.",
 };
 
-const FAQS = [
+const FAQS: Array<{ q: string; a: React.ReactNode }> = [
   {
     q: "Are your diamonds certified?",
     a: "Yes — every diamond is independently graded by GIA or IGI and ships with its original certificate and laser inscription.",
@@ -36,7 +36,18 @@ const FAQS = [
   },
   {
     q: "Can a ring be resized?",
-    a: "It depends on the piece — some are made to order and can be sized from the start, others may allow resizing after. Check the product description or ask before you buy and we'll confirm.",
+    a: (
+      <>
+        It depends on the piece — some are made to order and can be sized
+        from the start, others may allow resizing after. Check the product
+        description or ask before you buy and we&apos;ll confirm. Not sure
+        of your size?{" "}
+        <Link href="/size-guide" className="text-accent underline underline-offset-4">
+          See the ring size guide
+        </Link>
+        .
+      </>
+    ),
   },
   {
     q: "What's your returns policy?",
