@@ -86,12 +86,20 @@ export function SiteFooter() {
       </div>
 
       <div className="border-t border-border">
-        <div className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-6 text-xs text-muted sm:flex-row sm:justify-between sm:px-6">
+        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-6 text-xs text-muted sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <p>
             © {new Date().getFullYear()} {SITE.name}. All pieces sold subject to
             availability.
           </p>
-          <p>Certificates issued by GIA / IGI. Prices include applicable taxes.</p>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+            <p>Certificates issued by GIA / IGI. Prices include applicable taxes.</p>
+            <Link href="/privacy" className="underline underline-offset-4 transition-colors hover:text-accent">
+              Privacy Policy
+            </Link>
+            <Link href="/terms" className="underline underline-offset-4 transition-colors hover:text-accent">
+              Terms of Sale
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

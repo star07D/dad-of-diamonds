@@ -93,3 +93,16 @@ export function websiteJsonLd() {
     url: SITE.url,
   };
 }
+
+/** schema.org FAQPage, so FAQ answers are eligible for Google rich results. */
+export function faqJsonLd(items: Array<{ q: string; text: string }>) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: { "@type": "Answer", text: item.text },
+    })),
+  };
+}

@@ -49,6 +49,14 @@ jewellery — built with **Next.js 16**, **React 19**, **Tailwind CSS 4**,
   certificate side by side.
 - **Ring size guide** — a US/UK/EU conversion chart plus two ways to
   measure at home, at `/size-guide`, linked from the FAQ and every ring.
+- **Privacy Policy & Terms of Sale** — plain-language pages at `/privacy`
+  and `/terms`, linked in the footer. They describe what the site actually
+  does (grounded in the code — what's emailed vs. stored only in your
+  browser, what Stripe collects, etc.), not invented legal boilerplate;
+  worth a professional review before relying on them, see the note in
+  ["Legal pages"](#legal-pages) below.
+- **FAQ structured data** — the FAQ page emits schema.org `FAQPage`
+  JSON-LD, so its answers are eligible for Google rich results.
 - **A real CMS** (Sanity, embedded at `/studio`) — add, edit and photograph
   pieces from a dashboard, no code. Falls back to sample data until it's
   connected, so the site is never broken.
@@ -132,6 +140,8 @@ src/
       faq/                    Certification, delivery, resizing, returns
       compare/                Client page — side-by-side diamond comparison
       size-guide/             Ring size conversion chart + measuring tips
+      privacy/  terms/        Plain-language legal pages (not legal advice
+                             — see "Legal pages" below)
     studio/[[...tool]]/     Embedded Sanity Studio at /studio
     api/
       products/route.ts      Public catalogue feed (used by the cart)
@@ -161,7 +171,8 @@ src/
                              and the header search box
     stripe.ts / resend.ts   Lazy clients — null until configured
     use-loupe.ts            Shared cursor-spotlight hook
-    json-ld.ts              schema.org Product/Organization/WebSite builders
+    json-ld.ts              schema.org Product/Organization/WebSite/FAQPage
+                             builders
   components/               Header, footer, logo, cards, gallery, forms,
                              Reveal (scroll-in), Sparkles, HeroShowcase,
                              WishlistButton, ShareButtons, Lightbox,
@@ -259,6 +270,25 @@ sources: a WhatsApp or email message from a past buyer (ask permission to
 quote them), or a short line dictated over a call. First name + last initial
 (e.g. `"Sarah M."`) is the usual convention if a client would rather not use
 their full name.
+
+---
+
+## Legal pages
+
+`/privacy` and `/terms` (`src/app/(site)/privacy/page.tsx`,
+`src/app/(site)/terms/page.tsx`) are plain-language pages that describe how
+the site actually behaves — what's emailed to the owner vs. kept only in
+your browser's local storage, what Stripe collects during checkout, the
+one-of-a-kind/case-by-case returns approach already stated on the FAQ, and
+so on. Every claim on them is grounded in what the code actually does; none
+of it was invented.
+
+They are **not** a substitute for real legal advice. Before relying on
+these as binding terms — especially once live payments are enabled, or for
+customers in jurisdictions with specific consumer-protection or data-privacy
+requirements (e.g. GDPR, given the German contact number in `SITE.phone`) —
+have them reviewed by a lawyer familiar with the applicable rules. Update
+the pages directly; there's no CMS integration for this content.
 
 ---
 
@@ -398,6 +428,8 @@ site.
 | FAQ | ✅ Live |
 | Diamond comparison | ✅ Live |
 | Ring size guide | ✅ Live |
+| Privacy Policy & Terms | ⚠️ Live, but needs a legal review — see "Legal pages" |
+| FAQ structured data | ✅ Live |
 | Custom domain | Owner-managed, not part of this repo's deploy |
 
 **Not yet built:** live (real-money) Stripe mode, and the sold-item webhook.

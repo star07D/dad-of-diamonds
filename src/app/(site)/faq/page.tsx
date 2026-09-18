@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { DiamondMark } from "@/components/logo";
 import { Reveal } from "@/components/reveal";
+import { JsonLd } from "@/components/json-ld";
+import { faqJsonLd } from "@/lib/json-ld";
 
 export const metadata: Metadata = {
   title: "FAQ",
@@ -9,7 +11,9 @@ export const metadata: Metadata = {
     "Answers to common questions about certification, reserving a piece, delivery, resizing, and more.",
 };
 
-const FAQS: Array<{ q: string; a: React.ReactNode }> = [
+// `plainA` is only needed for entries whose `a` is JSX rather than a plain
+// string — it feeds the FAQPage structured data, which requires plain text.
+const FAQS: Array<{ q: string; a: React.ReactNode; plainA?: string }> = [
   {
     q: "Are your diamonds certified?",
     a: "Yes — every diamond is independently graded by GIA or IGI and ships with its original certificate and laser inscription.",
@@ -48,6 +52,8 @@ const FAQS: Array<{ q: string; a: React.ReactNode }> = [
         .
       </>
     ),
+    plainA:
+      "It depends on the piece — some are made to order and can be sized from the start, others may allow resizing after. Check the product description or ask before you buy and we'll confirm. See the ring size guide if you're not sure of your size.",
   },
   {
     q: "What's your returns policy?",
@@ -62,6 +68,14 @@ const FAQS: Array<{ q: string; a: React.ReactNode }> = [
 export default function FaqPage() {
   return (
     <div className="relative mx-auto max-w-2xl overflow-hidden px-4 py-16 sm:px-6">
+      <JsonLd
+        data={faqJsonLd(
+          FAQS.map((item) => ({
+            q: item.q,
+            text: typeof item.a === "string" ? item.a : (item.plainA ?? ""),
+          })),
+        )}
+      />
       <DiamondMark className="pointer-events-none absolute -right-16 -top-10 h-56 w-56 text-accent/10" />
 
       <Reveal>
