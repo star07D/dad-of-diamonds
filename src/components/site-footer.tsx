@@ -62,6 +62,11 @@ export function SiteFooter() {
               </a>
             </li>
             <li>
+              <a href={SITE.instagram} className="transition-colors hover:text-accent" target="_blank" rel="noreferrer">
+                Instagram
+              </a>
+            </li>
+            <li>
               <Link href="/about" className="transition-colors hover:text-accent">
                 About the collection
               </Link>

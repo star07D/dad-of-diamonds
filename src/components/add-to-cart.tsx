@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useCart } from "@/lib/cart-context";
+import { NotifyForm } from "./notify-form";
 import type { Product } from "@/lib/types";
 
 export function AddToCart({ product }: { product: Product }) {
@@ -25,6 +26,22 @@ export function AddToCart({ product }: { product: Product }) {
           </Link>
           .
         </p>
+        <div className="border-t border-border pt-4">
+          <p className="mb-3 text-sm text-muted">
+            {product.status === "reserved"
+              ? "Reserved for someone else — get an email if it becomes available again."
+              : "Sold — get an email when something similar arrives."}
+          </p>
+          <NotifyForm
+            piece={product.slug}
+            buttonLabel="Alert me"
+            successMessage={
+              product.status === "reserved"
+                ? "Noted — we’ll email you if it becomes available again."
+                : "Noted — we’ll email you when something similar arrives."
+            }
+          />
+        </div>
       </div>
     );
   }

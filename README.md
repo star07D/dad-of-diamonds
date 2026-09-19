@@ -57,6 +57,11 @@ jewellery — built with **Next.js 16**, **React 19**, **Tailwind CSS 4**,
   ["Legal pages"](#legal-pages) below.
 - **FAQ structured data** — the FAQ page emits schema.org `FAQPage`
   JSON-LD, so its answers are eligible for Google rich results.
+- **Piece alerts** — reserved and sold pieces show an "Alert me" email form
+  (reserved: "if it becomes available again"; sold: "when something similar
+  arrives"). It reuses `/api/subscribe`, emailing the owner the piece link.
+- **Instagram** — a "Follow along" strip on the homepage and a footer link,
+  both driven by `SITE.instagram` in `src/lib/site.ts`.
 - **A real CMS** (Sanity, embedded at `/studio`) — add, edit and photograph
   pieces from a dashboard, no code. Falls back to sample data until it's
   connected, so the site is never broken.
@@ -148,7 +153,8 @@ src/
       checkout/route.ts      Creates the Stripe Checkout session
       enquiry/route.ts       Sends contact-form / cart / offer enquiries via
                              Resend
-      subscribe/route.ts     Sends new-arrivals signups via Resend
+      subscribe/route.ts     Sends new-arrivals signups and piece alerts via
+                             Resend
     layout.tsx              Root layout (fonts, metadata) — no header/footer
     globals.css             Theme tokens + all motion/animation CSS
   sanity/
@@ -179,7 +185,7 @@ src/
                              NotifyForm, SortSelect, SearchBox,
                              TrustBadges, Testimonials, RecentlyViewed,
                              RecordView, CompareButton, CompareTray,
-                             JsonLd
+                             InstagramStrip, JsonLd
 scripts/
   seed-sanity.mts           Loads the 12 starter pieces + photos into Sanity
 public/products/            Starter product photography (licensed stock)
@@ -430,6 +436,8 @@ site.
 | Ring size guide | ✅ Live |
 | Privacy Policy & Terms | ⚠️ Live, but needs a legal review — see "Legal pages" |
 | FAQ structured data | ✅ Live |
+| Piece alerts (reserved/sold) | ✅ Live |
+| Instagram strip | ✅ Live |
 | Custom domain | Owner-managed, not part of this repo's deploy |
 
 **Not yet built:** live (real-money) Stripe mode, and the sold-item webhook.

@@ -4,7 +4,16 @@ import { useState } from "react";
 
 type Status = "idle" | "sending" | "sent" | "error" | "unavailable";
 
-export function NotifyForm() {
+export function NotifyForm({
+  piece,
+  buttonLabel = "Notify me",
+  successMessage = "You’re on the list — we’ll email you about new pieces.",
+}: {
+  /** slug of a reserved/sold piece — turns this into a per-piece alert */
+  piece?: string;
+  buttonLabel?: string;
+  successMessage?: string;
+} = {}) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
@@ -19,7 +28,7 @@ export function NotifyForm() {
       const res = await fetch("/api/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, startedAt }),
+        body: JSON.stringify({ email, startedAt, piece }),
       });
       const data = await res.json();
       if (data.ok) {
@@ -38,9 +47,7 @@ export function NotifyForm() {
 
   if (status === "sent") {
     return (
-      <p className="text-sm text-accent-strong">
-        You&apos;re on the list — we&apos;ll email you about new pieces.
-      </p>
+      <p className="text-sm text-accent-strong">{successMessage}</p>
     );
   }
 
@@ -70,7 +77,7 @@ export function NotifyForm() {
           disabled={status === "sending"}
           className="shrink-0 rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-accent-contrast shadow-sm transition-all hover:-translate-y-0.5 hover:opacity-95 hover:shadow-md active:translate-y-0 disabled:pointer-events-none disabled:opacity-60"
         >
-          {status === "sending" ? "…" : "Notify me"}
+          {status === "sending" ? "…" : buttonLabel}
         </button>
       </div>
 

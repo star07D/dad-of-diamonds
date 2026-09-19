@@ -4,6 +4,8 @@ import { SITE } from "@/lib/site";
 
 interface Body {
   email?: unknown;
+  /** slug of a reserved/sold piece the visitor wants an alert about */
+  piece?: unknown;
   /** honeypot — real visitors never fill this in */
   company?: unknown;
   /** ms since the form was rendered — filters instant bot submits */
@@ -45,13 +47,18 @@ export async function POST(request: Request) {
     return NextResponse.json({ configured: false });
   }
 
+  const rawPiece = str(body.piece, 200);
+  const piece = /^[a-z0-9-]+$/.test(rawPiece) ? rawPiece : "";
+
   try {
     const { error } = await resend.emails.send({
       from: RESEND_FROM,
       to: SITE.email,
       replyTo: email,
-      subject: "New arrivals signup",
-      text: `New arrivals signup:\n${email}`,
+      subject: piece ? "Piece alert request" : "New arrivals signup",
+      text: piece
+        ? `Alert request for:\n${SITE.url}/product/${piece}\n\nEmail: ${email}`
+        : `New arrivals signup:\n${email}`,
     });
     if (error) {
       console.error("[subscribe] Resend error:", error);

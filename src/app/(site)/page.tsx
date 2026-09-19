@@ -7,6 +7,7 @@ import { HeroShowcase } from "@/components/hero-showcase";
 import { Sparkles } from "@/components/sparkles";
 import { Testimonials } from "@/components/testimonials";
 import { RecentlyViewed } from "@/components/recently-viewed";
+import { InstagramStrip } from "@/components/instagram-strip";
 import { CATEGORIES } from "@/lib/site";
 
 export default async function HomePage() {
@@ -132,6 +133,8 @@ export default async function HomePage() {
       </section>
 
       <Testimonials />
+
+      <InstagramStrip />
 
       {/* CTA */}
       <section className="relative overflow-hidden">
