@@ -125,9 +125,9 @@ setup guides below for each).
 | --- | --- | --- |
 | `NEXT_PUBLIC_SITE_URL` | Absolute URLs — SEO tags, Stripe redirects | Config |
 | `NEXT_PUBLIC_SANITY_PROJECT_ID` / `NEXT_PUBLIC_SANITY_DATASET` | The CMS (catalogue + `/studio`) | Config |
-| `SANITY_API_WRITE_TOKEN` | One-time: `npm run seed` only, never deployed | — (local only) |
+| `SANITY_API_WRITE_TOKEN` | Editor-role token: lets the Stripe webhook mark pieces sold (also used locally by `npm run seed`) | **Secret** |
 | `STRIPE_SECRET_KEY` | Real payments | **Secret** |
-| `STRIPE_WEBHOOK_SECRET` | Auto-marking items sold (optional, not yet wired up) | **Secret** |
+| `STRIPE_WEBHOOK_SECRET` | Verifies Stripe's webhook calls and marks pieces sold automatically | **Secret** |
 | `RESEND_API_KEY` | Enquiry emails | **Secret** |
 | `RESEND_FROM` | Custom sender once a domain is verified in Resend | Config |
 
@@ -166,11 +166,14 @@ src/
                              Resend
       subscribe/route.ts     Sends new-arrivals signups and piece alerts via
                              Resend
+      webhook/route.ts       Stripe webhook: verifies the signature, marks
+                             pieces sold in Sanity, emails the owner the order
     layout.tsx              Root layout (fonts, metadata) — no header/footer
     globals.css             Theme tokens + all motion/animation CSS
   sanity/
     schemaTypes/product.ts  The CMS schema
-    lib/                    Sanity client + GROQ queries
+    lib/                    Sanity client + GROQ queries; mark-sold.ts (webhook
+                             write-back) + plan-sold.ts (its pure decision logic)
     env.ts                  Reads NEXT_PUBLIC_SANITY_* (soft — never throws)
   lib/
     site.ts                 Brand name, contact details, categories  ← edit this
@@ -238,13 +241,56 @@ edit **`src/lib/site.ts`**.
 > `src/app/api/checkout/route.ts` is the only place to swap for Razorpay /
 > Cashfree later.
 
-### (Optional) Auto-mark items as sold
+### Mark pieces sold automatically (webhook)
 
-Add a webhook at <https://dashboard.stripe.com/webhooks> pointing to
-`https://YOUR_DOMAIN/api/webhook` for the `checkout.session.completed` event,
-put the signing secret in `STRIPE_WEBHOOK_SECRET`, and add a
-`src/app/api/webhook/route.ts` handler that updates the product status. (Not
-built yet — needs the CMS first.)
+Without this, nothing stops two people paying for the same one-of-a-kind
+piece, and you'd have to mark each sale as sold in the Studio by hand.
+`src/app/api/webhook/route.ts` handles it:
+
+1. In Stripe → **Developers → Webhooks → Add endpoint**, use
+   `https://YOUR_DOMAIN/api/webhook` and select the event
+   **`checkout.session.completed`**. Copy the endpoint's **Signing secret**
+   (`whsec_...`) into Vercel as `STRIPE_WEBHOOK_SECRET` (type **Secret**).
+2. In <https://sanity.io/manage> → your project → **API → Tokens**, create a
+   token with the **Editor** role and add it to Vercel as
+   `SANITY_API_WRITE_TOKEN` (type **Secret**). It's only ever used
+   server-side by the webhook.
+3. Redeploy, then make a test purchase. The piece flips to **Sold** within
+   seconds, and an email with the buyer's details and shipping address lands
+   in the `SITE.email` inbox.
+
+What it does, and why it's safe:
+
+- Every request's signature is verified against `STRIPE_WEBHOOK_SECRET`;
+  unsigned, wrongly-signed or tampered requests get a 400.
+- It's idempotent — Stripe retries webhooks, and each piece is stamped with
+  the payment's session id (the read-only "Stripe payment" field in the
+  Studio) so a repeat delivery does nothing.
+- If a payment arrives for a piece that's **already sold** (two people were
+  in checkout at once), the email subject becomes **ACTION NEEDED** and tells
+  you to refund the second payment in the Stripe dashboard.
+- If `SANITY_API_WRITE_TOKEN` isn't set, it still emails you the order and
+  reminds you to mark the pieces sold by hand.
+- Without `STRIPE_WEBHOOK_SECRET` the endpoint just answers 501.
+
+> **Known limit:** a piece is only marked sold once payment completes, so
+> two people *can* be in checkout for the same piece simultaneously — the
+> second is caught by the conflict email above rather than prevented up
+> front.
+
+### Going live (real money)
+
+Live mode is a key swap, not a code change. Test mode and live mode are
+separate in Stripe, including webhooks:
+
+1. Finish Stripe's account activation (business details, bank account).
+2. In Vercel, replace `STRIPE_SECRET_KEY` with the **live** key (`sk_live_...`).
+3. Create a **new webhook endpoint in live mode** (same URL and event) and
+   replace `STRIPE_WEBHOOK_SECRET` with *its* signing secret — the test-mode
+   secret won't validate live events.
+4. Redeploy and do one real, small purchase to confirm the email arrives and
+   the piece turns Sold (you can refund it afterwards in Stripe).
+5. Have the Privacy and Terms pages reviewed first — see "Legal pages".
 
 ---
 
@@ -454,6 +500,9 @@ site.
 | Drop a hint (wishlist sharing) | ✅ Live |
 | Piece alerts (reserved/sold) | ✅ Live |
 | Instagram strip | ✅ Live |
+| Sold webhook + order email | ⚠️ Built — needs 2 Vercel secrets, see "Mark pieces sold automatically" |
 | Custom domain | Owner-managed, not part of this repo's deploy |
 
-**Not yet built:** live (real-money) Stripe mode, and the sold-item webhook.
+Payments run in **test mode** until you follow "Going live" above. The sold
+webhook is built but needs `STRIPE_WEBHOOK_SECRET` and `SANITY_API_WRITE_TOKEN`
+adding in Vercel before it does anything.

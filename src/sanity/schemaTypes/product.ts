@@ -58,6 +58,14 @@ export const product = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: "stripeSessionId",
+      title: "Stripe payment (set automatically)",
+      type: "string",
+      description:
+        "Filled in by the site when a Stripe payment marks this piece as sold. Leave blank.",
+      readOnly: true,
+    }),
+    defineField({
       name: "featured",
       title: "Show on the homepage",
       type: "boolean",
