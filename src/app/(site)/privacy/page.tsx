@@ -59,7 +59,10 @@ export default function PrivacyPage() {
             Your cart, wishlist, comparison list, and recently viewed pieces
             are all stored only in your browser&apos;s local storage. None
             of this is sent to us or visible to us — it stays on your
-            device until you clear your browser data.
+            device until you clear your browser data. If you use &ldquo;Drop
+            a hint&rdquo; to share your wishlist, the link itself carries
+            the list of pieces (and the name you type, if any) — we
+            don&apos;t store it.
           </p>
         </section>
 

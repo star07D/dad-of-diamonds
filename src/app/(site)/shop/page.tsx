@@ -3,10 +3,12 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { getAllProducts, getProductsByCategory, sortProducts } from "@/lib/products";
 import { searchProducts } from "@/lib/search";
+import { filterProducts, shapesIn, FILTER_KEYS } from "@/lib/filters";
 import { ProductCard } from "@/components/product-card";
 import { Reveal } from "@/components/reveal";
 import { DiamondMark } from "@/components/logo";
 import { SortSelect } from "@/components/sort-select";
+import { ShopFilters } from "@/components/shop-filters";
 import { CATEGORIES, categoryLabel } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -23,19 +25,28 @@ export default async function ShopPage({
     typeof params.category === "string" ? params.category : undefined;
   const sort = typeof params.sort === "string" ? params.sort : undefined;
   const q = typeof params.q === "string" ? params.q : undefined;
+  const filters = Object.fromEntries(
+    FILTER_KEYS.map((k) => [k, typeof params[k] === "string" ? (params[k] as string) : undefined]),
+  );
+  const filtersActive = FILTER_KEYS.some((k) => filters[k]);
 
   const byCategory = active
     ? await getProductsByCategory(active)
     : await getAllProducts();
-  const products = sortProducts(searchProducts(byCategory, q), sort);
+  const shapes = shapesIn(byCategory);
+  const products = sortProducts(
+    filterProducts(searchProducts(byCategory, q), filters),
+    sort,
+  );
 
-  // Preserves sort/search when switching category, and category/sort when
-  // paging — every FilterPill link carries whatever else is active.
+  // Preserves sort/search/filters when switching category — every
+  // FilterPill link carries whatever else is active.
   function filterHref(category?: string) {
     const p = new URLSearchParams();
     if (category) p.set("category", category);
     if (sort) p.set("sort", sort);
     if (q) p.set("q", q);
+    for (const k of FILTER_KEYS) if (filters[k]) p.set(k, filters[k]!);
     const query = p.toString();
     return query ? `/shop?${query}` : "/shop";
   }
@@ -52,7 +63,7 @@ export default async function ShopPage({
               : "Everything available"}
         </h1>
         <p className="mt-3 max-w-lg text-muted">
-          {q
+          {q || filtersActive
             ? `${products.length} piece${products.length === 1 ? "" : "s"} found.`
             : "Each item is unique. Prices are all-in; reserve online and we'll confirm the piece is held for you."}
         </p>
@@ -73,17 +84,26 @@ export default async function ShopPage({
             <SortSelect />
           </Suspense>
         </div>
+
+        <div className="mt-4">
+          <Suspense fallback={null}>
+            <ShopFilters shapes={shapes} />
+          </Suspense>
+        </div>
       </Reveal>
 
       {products.length === 0 ? (
         <div className="mt-16 flex flex-col items-center text-center">
           <DiamondMark className="h-8 w-8 text-accent/60" />
           <p className="mt-4 text-muted">
-            {q ? (
+            {q || filtersActive ? (
               <>
-                Nothing matches &ldquo;{q}&rdquo;.{" "}
-                <Link href="/shop" className="text-accent underline underline-offset-4">
-                  Clear search
+                {q ? <>Nothing matches &ldquo;{q}&rdquo;.</> : "Nothing matches those filters."}{" "}
+                <Link
+                  href={active ? `/shop?category=${active}` : "/shop"}
+                  className="text-accent underline underline-offset-4"
+                >
+                  {q ? "Clear search" : "Clear filters"}
                 </Link>
               </>
             ) : (

@@ -57,6 +57,15 @@ jewellery — built with **Next.js 16**, **React 19**, **Tailwind CSS 4**,
   ["Legal pages"](#legal-pages) below.
 - **FAQ structured data** — the FAQ page emits schema.org `FAQPage`
   JSON-LD, so its answers are eligible for Google rich results.
+- **Shop filters** — price range, plus shape, colour and clarity for
+  diamonds (colour/clarity are "or better" thresholds). They live in the URL
+  (`?price=5000-10000&shape=Oval&color=G&clarity=VS2`), combine with category,
+  search and sort, and shapes are read from the catalogue so the list never
+  goes stale.
+- **Drop a hint** — the wishlist page can share the saved list by WhatsApp,
+  the native share sheet or a copied link, with an optional sender name. The
+  link itself carries the piece slugs (`/wishlist/shared?items=…&from=…`) so
+  nothing is stored anywhere; the shared page is `noindex`.
 - **Piece alerts** — reserved and sold pieces show an "Alert me" email form
   (reserved: "if it becomes available again"; sold: "when something similar
   arrives"). It reuses `/api/subscribe`, emailing the owner the piece link.
@@ -136,7 +145,9 @@ src/
   app/
     (site)/                 Every page that shares the header/footer
       page.tsx                Home
-      shop/                   Listing + ?category= filter, ?sort=, ?q= search
+      shop/                   Listing + ?category=, ?sort=, ?q=, ?price= ?shape=
+                             ?color= ?clarity= filters
+      wishlist/shared/        Read-only page for a shared "hint" link
       product/[slug]/         Product detail
       cart/                   Cart (client) → POST /api/checkout
       success/                Post-payment confirmation
@@ -166,6 +177,8 @@ src/
     products.ts             The ONLY place that reads the catalogue
                              (incl. getRelatedProducts, sortProducts)
     search.ts                searchProducts — pure, used server + client
+    filters.ts               filterProducts + option lists — pure, shared by
+                             the shop page and the ShopFilters controls
     sample-products.ts      Offline fallback catalogue
     types.ts                Product shape
     cart-context.tsx        localStorage cart (useSyncExternalStore)
@@ -185,7 +198,8 @@ src/
                              NotifyForm, SortSelect, SearchBox,
                              TrustBadges, Testimonials, RecentlyViewed,
                              RecordView, CompareButton, CompareTray,
-                             InstagramStrip, JsonLd
+                             InstagramStrip, ShopFilters, WishlistHint,
+                             JsonLd
 scripts/
   seed-sanity.mts           Loads the 12 starter pieces + photos into Sanity
 public/products/            Starter product photography (licensed stock)
@@ -436,6 +450,8 @@ site.
 | Ring size guide | ✅ Live |
 | Privacy Policy & Terms | ⚠️ Live, but needs a legal review — see "Legal pages" |
 | FAQ structured data | ✅ Live |
+| Shop filters | ✅ Live |
+| Drop a hint (wishlist sharing) | ✅ Live |
 | Piece alerts (reserved/sold) | ✅ Live |
 | Instagram strip | ✅ Live |
 | Custom domain | Owner-managed, not part of this repo's deploy |

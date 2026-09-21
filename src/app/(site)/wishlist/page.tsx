@@ -6,6 +6,7 @@ import { useWishlist } from "@/lib/wishlist-context";
 import { useCatalog } from "@/lib/use-catalog";
 import { ProductCard } from "@/components/product-card";
 import { DiamondMark } from "@/components/logo";
+import { WishlistHint } from "@/components/wishlist-hint";
 import { Reveal } from "@/components/reveal";
 
 export default function WishlistPage() {
@@ -68,6 +69,8 @@ export default function WishlistPage() {
           </Reveal>
         ))}
       </div>
+
+      <WishlistHint slugs={items.map((p) => p.slug)} />
     </div>
   );
 }
