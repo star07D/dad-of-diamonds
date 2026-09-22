@@ -43,7 +43,7 @@ export default async function HomePage() {
                 Browse the collection
               </Link>
               <Link
-                href="/contact"
+                href="/contact?intent=viewing"
                 className="rounded-full border border-border px-6 py-3 text-sm transition-all hover:-translate-y-0.5 hover:border-accent active:translate-y-0"
               >
                 Book a private viewing

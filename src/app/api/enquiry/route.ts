@@ -38,6 +38,7 @@ export async function POST(request: Request) {
     ? body.items.filter((x): x is string => typeof x === "string").slice(0, 20)
     : [];
   const isOffer = body.intent === "offer";
+  const isViewing = body.intent === "viewing";
 
   if (!name || !email || !message) {
     return NextResponse.json(
@@ -67,7 +68,11 @@ export async function POST(request: Request) {
     .join("\n");
 
   const text = [
-    isOffer ? `New offer from the website` : `New enquiry from the website`,
+    isOffer
+      ? `New offer from the website`
+      : isViewing
+        ? `New private viewing request`
+        : `New enquiry from the website`,
     ``,
     `Name: ${name}`,
     `Email: ${email}`,
@@ -86,9 +91,11 @@ export async function POST(request: Request) {
       replyTo: email,
       subject: isOffer
         ? "Offer on a piece"
-        : items.length
-          ? "Enquiry about a piece"
-          : `Enquiry from ${name}`,
+        : isViewing
+          ? "Private viewing request"
+          : items.length
+            ? "Enquiry about a piece"
+            : `Enquiry from ${name}`,
       text,
     });
     if (error) {

@@ -20,7 +20,8 @@ export default async function ContactPage({
     typeof params.items === "string"
       ? params.items.split(",").filter(Boolean)
       : [];
-  const intent = params.intent === "offer" ? "offer" : undefined;
+  const intent =
+    params.intent === "offer" ? "offer" : params.intent === "viewing" ? "viewing" : undefined;
   const offerProduct =
     intent === "offer" && items.length === 1
       ? await getProductBySlug(items[0])
@@ -31,12 +32,15 @@ export default async function ContactPage({
       <DiamondMark className="pointer-events-none absolute -right-16 -top-10 h-56 w-56 text-accent/10" />
 
       <Reveal>
-        <p className="eyebrow">Contact</p>
-        <h1 className="mt-2 font-display text-4xl">Let&apos;s talk</h1>
+        <p className="eyebrow">{intent === "viewing" ? "Private viewing" : "Contact"}</p>
+        <h1 className="mt-2 font-display text-4xl">
+          {intent === "viewing" ? "Book a private viewing" : "Let’s talk"}
+        </h1>
         <p className="mt-3 text-muted">
-          Questions about a stone, a bespoke commission, or a private viewing —
-          send a note and you&apos;ll hear back within one business day. You can
-          also reach us on{" "}
+          {intent === "viewing"
+            ? "Tell us when suits you and we'll confirm a time to see pieces in person, or by appointment for a specific stone."
+            : "Questions about a stone, a bespoke commission, or a private viewing — send a note and you'll hear back within one business day."}{" "}
+          You can also reach us on{" "}
           <a
             href={SITE.whatsapp}
             className="text-accent underline underline-offset-4"

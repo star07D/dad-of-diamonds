@@ -35,6 +35,9 @@ jewellery — built with **Next.js 16**, **React 19**, **Tailwind CSS 4**,
   next to the buy buttons on every product page and in the footer.
 - **Make an offer** — a negotiate link next to Reserve/Add to cart that opens
   the enquiry form pre-filled with the piece and a place to name a price.
+- **Book a private viewing** — the homepage button now opens a proper
+  booking form (preferred date + time), instead of the generic contact form
+  it used to.
 - **Testimonials** — a homepage section for client quotes. Ships with
   bracketed placeholder copy (`[Add a client quote here]`) — replace with
   real feedback before relying on it as social proof; see [Add real
@@ -489,6 +492,7 @@ site.
 | Search | ✅ Live |
 | Trust badges | ✅ Live |
 | Make an offer | ✅ Live |
+| Private viewing booking | ✅ Live |
 | Testimonials | ⚠️ Placeholder copy — needs real client quotes |
 | Recently viewed | ✅ Live |
 | FAQ | ✅ Live |
