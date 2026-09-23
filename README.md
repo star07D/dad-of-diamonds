@@ -29,6 +29,10 @@ jewellery — built with **Next.js 16**, **React 19**, **Tailwind CSS 4**,
 - **Diamond guide** — a plain-English "Understanding the 4 Cs" page
   (carat/cut/colour/clarity + why certification matters), linked from the
   footer and from every diamond's spec table.
+- **Certificate link** — upload a diamond's certificate (PDF or photo) in
+  Sanity and the "Certificate" spec on its product page becomes a clickable
+  "GIA"/"IGI" link straight to it. Nothing appears until a file is uploaded —
+  every diamond currently shows plain text, same as before.
 - **Search** — a header search box with live suggestions (name, summary,
   category) as you type, and a full results page at `/shop?q=`.
 - **Trust badges** — certified / secure checkout / insured delivery, shown
@@ -174,7 +178,8 @@ src/
     layout.tsx              Root layout (fonts, metadata) — no header/footer
     globals.css             Theme tokens + all motion/animation CSS
   sanity/
-    schemaTypes/product.ts  The CMS schema
+    schemaTypes/product.ts  The CMS schema (diamond.certificateFile is the
+                             certificate upload)
     lib/                    Sanity client + GROQ queries; mark-sold.ts (webhook
                              write-back) + plan-sold.ts (its pure decision logic)
     env.ts                  Reads NEXT_PUBLIC_SANITY_* (soft — never throws)
@@ -493,6 +498,7 @@ site.
 | Trust badges | ✅ Live |
 | Make an offer | ✅ Live |
 | Private viewing booking | ✅ Live |
+| Certificate link | ✅ Live — needs a file uploaded per diamond in Sanity to show |
 | Testimonials | ⚠️ Placeholder copy — needs real client quotes |
 | Recently viewed | ✅ Live |
 | FAQ | ✅ Live |

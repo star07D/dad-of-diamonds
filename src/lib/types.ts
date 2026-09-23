@@ -12,6 +12,8 @@ export interface DiamondSpec {
   /** e.g. "GIA", "IGI" */
   certificateLab?: string;
   certificateNumber?: string;
+  /** Link to the certificate PDF/photo, if one was uploaded in the CMS. */
+  certificateUrl?: string;
 }
 
 export interface ProductImage {

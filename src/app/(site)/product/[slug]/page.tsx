@@ -52,17 +52,17 @@ export default async function ProductPage({
 
   const related = await getRelatedProducts(product, 3);
 
-  const specs: Array<[string, string | undefined]> = product.diamond
+  const specs: Array<[string, string | undefined, string | undefined]> = product.diamond
     ? [
-        ["Carat", product.diamond.carat ? `${product.diamond.carat.toFixed(2)} ct` : undefined],
-        ["Shape", product.diamond.shape],
-        ["Cut", product.diamond.cut],
-        ["Colour", product.diamond.color],
-        ["Clarity", product.diamond.clarity],
-        ["Certificate", product.diamond.certificateLab],
+        ["Carat", product.diamond.carat ? `${product.diamond.carat.toFixed(2)} ct` : undefined, undefined],
+        ["Shape", product.diamond.shape, undefined],
+        ["Cut", product.diamond.cut, undefined],
+        ["Colour", product.diamond.color, undefined],
+        ["Clarity", product.diamond.clarity, undefined],
+        ["Certificate", product.diamond.certificateLab, product.diamond.certificateUrl],
       ]
     : [];
-  if (product.material) specs.unshift(["Metal", product.material]);
+  if (product.material) specs.unshift(["Metal", product.material, undefined]);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
@@ -125,13 +125,42 @@ export default async function ProductPage({
               <dl className="grid grid-cols-2 gap-x-6 gap-y-4">
                 {specs
                   .filter(([, value]) => value)
-                  .map(([label, value]) => (
+                  .map(([label, value, href]) => (
                     <div key={label}>
                       <dt className="eyebrow">{label}</dt>
-                      <dd className="mt-1 text-sm">{value}</dd>
+                      <dd className="mt-1 text-sm">
+                        {href ? (
+                          <a
+                            href={href}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-1 text-accent underline underline-offset-4 transition-colors hover:text-accent-strong"
+                          >
+                            {value}
+                            <svg
+                              viewBox="0 0 24 24"
+                              className="h-3 w-3"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth={2}
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M7 17 17 7M9 7h8v8" />
+                            </svg>
+                          </a>
+                        ) : (
+                          value
+                        )}
+                      </dd>
                     </div>
                   ))}
               </dl>
+              {product.diamond?.certificateUrl && (
+                <p className="mt-3 text-xs text-muted">
+                  Certificate on file — click the lab name above to view it.
+                </p>
+              )}
               <div className="mt-5 flex flex-col items-start gap-1.5">
                 {product.diamond && (
                   <Link

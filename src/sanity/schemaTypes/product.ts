@@ -124,6 +124,14 @@ export const product = defineType({
         { name: "clarity", title: "Clarity", type: "string" },
         { name: "certificateLab", title: "Certificate lab (GIA / IGI)", type: "string" },
         { name: "certificateNumber", title: "Certificate number", type: "string" },
+        {
+          name: "certificateFile",
+          title: "Certificate (PDF or photo)",
+          type: "file",
+          description:
+            'Upload the GIA/IGI report. Shown on the product page as a "View certificate" link next to the lab name.',
+          options: { accept: ".pdf,image/*" },
+        },
       ],
     }),
   ],

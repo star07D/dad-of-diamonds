@@ -21,7 +21,10 @@ const PRODUCT_PROJECTION = /* groq */ `{
     "src": asset->url + "?w=1400&fit=max&auto=format",
     "alt": coalesce(alt, ^.name)
   },
-  diamond
+  "diamond": diamond{
+    ...,
+    "certificateUrl": certificateFile.asset->url
+  }
 }`;
 
 const ALL_PRODUCTS = /* groq */ `*[_type == "product" && defined(slug.current)] | order(
