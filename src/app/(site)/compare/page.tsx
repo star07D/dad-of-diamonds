@@ -45,7 +45,7 @@ export default function ComparePage() {
 
   if (products.length === 0) {
     return (
-      <div className="mx-auto flex max-w-3xl flex-col items-center px-4 py-24 text-center sm:px-6">
+      <div className="mx-auto flex min-h-[70vh] max-w-3xl flex-col items-center justify-center px-4 py-24 text-center sm:px-6">
         <DiamondMark className="animate-float h-10 w-10 text-accent" />
         <h1 className="mt-6 font-display text-3xl">Nothing to compare yet</h1>
         <p className="mt-3 text-muted">
