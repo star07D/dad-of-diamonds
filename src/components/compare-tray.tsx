@@ -4,11 +4,12 @@ import { useMemo } from "react";
 import Link from "next/link";
 import { useCompare } from "@/lib/compare-context";
 import { useCatalog } from "@/lib/use-catalog";
+import { resizedSrc } from "@/lib/image-url";
 
 /** Fixed bottom bar that appears once at least one piece is added to compare. */
 export function CompareTray() {
   const { ids, hydrated, remove, clear } = useCompare();
-  const { catalog } = useCatalog();
+  const { catalog } = useCatalog(hydrated && ids.length > 0);
 
   const products = useMemo(() => {
     if (!catalog) return [];
@@ -30,7 +31,7 @@ export function CompareTray() {
                   className="group relative h-12 w-12 shrink-0 overflow-hidden rounded-md border border-border"
                 >
                   <img
-                    src={p.images[0]?.src}
+                    src={resizedSrc(p.images[0]?.src, 144)}
                     alt={p.name}
                     className="h-full w-full object-cover"
                   />

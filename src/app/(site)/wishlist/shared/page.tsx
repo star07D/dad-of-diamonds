@@ -57,6 +57,7 @@ export default async function SharedWishlistPage({
         <p className="mt-3 max-w-lg text-muted">
           Tap the heart on any piece to save it to your own wishlist.
         </p>
+        <h2 className="sr-only">Shared pieces</h2>
       </Reveal>
 
       <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

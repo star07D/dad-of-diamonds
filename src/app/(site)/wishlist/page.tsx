@@ -22,7 +22,7 @@ export default function WishlistPage() {
 
   if (!hydrated || catalog === null) {
     return (
-      <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+      <div className="mx-auto min-h-[70vh] max-w-6xl px-4 py-20 sm:px-6">
         <p className="text-muted">{error ?? "Loading your wishlist…"}</p>
       </div>
     );
@@ -52,6 +52,7 @@ export default function WishlistPage() {
         <div>
           <p className="eyebrow">Saved</p>
           <h1 className="mt-2 font-display text-4xl">Your wishlist</h1>
+          <h2 className="sr-only">Saved pieces</h2>
         </div>
         <button
           type="button"

@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { ProductImage } from "@/lib/types";
 import { useLoupe } from "@/lib/use-loupe";
 import { Lightbox } from "./lightbox";
+import { resizedSrc, resizedSrcSet } from "@/lib/image-url";
 
 export function ProductGallery({
   images,
@@ -25,8 +26,11 @@ export function ProductGallery({
         className="cursor-light group relative cursor-zoom-in overflow-hidden rounded-lg border border-border bg-surface-muted"
       >
         <img
-          src={current?.src}
+          src={resizedSrc(current?.src, 1000)}
+          srcSet={resizedSrcSet(current?.src, [600, 1000, 1400])}
+          sizes="(min-width: 768px) 520px, 100vw"
           alt={current?.alt}
+          fetchPriority="high"
           className={`aspect-square w-full object-cover transition-transform duration-[900ms] ease-out ${
             sold ? "opacity-70 grayscale" : ""
           }`}
@@ -58,7 +62,12 @@ export function ProductGallery({
               }`}
               aria-label={`View image ${i + 1}`}
             >
-              <img src={img.src} alt="" className="h-full w-full object-cover" />
+              <img
+                src={resizedSrc(img.src, 192)}
+                alt=""
+                loading="lazy"
+                className="h-full w-full object-cover"
+              />
             </button>
           ))}
         </div>

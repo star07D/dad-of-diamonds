@@ -165,7 +165,10 @@ body {
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
-    animation: shimmer 10s ease-in-out 1.4s infinite;
+    /* Starts after the page has settled, and stops after a few sweeps —
+       it animates background-position, which repaints the headline each
+       frame, so an endless loop costs battery and main-thread time. */
+    animation: shimmer 10s ease-in-out 6s 3;
   }
   @keyframes shimmer {
     0% { background-position: 150% 0; }

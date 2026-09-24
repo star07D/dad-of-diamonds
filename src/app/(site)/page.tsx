@@ -138,10 +138,7 @@ export default async function HomePage() {
 
       {/* CTA */}
       <section className="relative overflow-hidden">
-        <DiamondMark
-          draw
-          className="animate-float pointer-events-none absolute -right-12 top-1/2 h-64 w-64 -translate-y-1/2 text-accent/15"
-        />
+        <DiamondMark className="animate-float pointer-events-none absolute -right-12 top-1/2 h-64 w-64 -translate-y-1/2 text-accent/15" />
         <DiamondMark className="pointer-events-none absolute -left-16 bottom-0 h-48 w-48 text-accent/10" />
         <Reveal className="mx-auto max-w-6xl px-4 py-20 text-center sm:px-6">
           <h2 className="font-display text-3xl sm:text-4xl">

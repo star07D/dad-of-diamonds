@@ -197,8 +197,10 @@ src/
     recently-viewed-context.tsx  localStorage view history — same pattern
     compare-context.tsx     localStorage compare list, capped at 3 — same
                              pattern
-    use-catalog.ts          Fetches /api/products — shared by cart, wishlist
-                             and the header search box
+    use-catalog.ts          Fetches /api/products once and shares it (cart,
+                             wishlist, search, compare tray). Pass
+                             `enabled = false` to defer the request
+    image-url.ts            Resizes Sanity CDN image widths (srcSet, thumbs)
     stripe.ts / resend.ts   Lazy clients — null until configured
     use-loupe.ts            Shared cursor-spotlight hook
     json-ld.ts              schema.org Product/Organization/WebSite/FAQPage
@@ -464,6 +466,60 @@ site.
 
 ---
 
+## Performance & accessibility
+
+The site was audited with Lighthouse (mobile emulation) and tuned. Before the
+work, accessibility was already ~98-100 and best-practices/SEO 100; the weak
+spot was performance (46-67 on the live site).
+
+What was fixed, and why:
+
+- **Images sized to their slot.** Sanity images were sent at 1400px into
+  350-660px slots. Cards, the hero and the gallery now use `srcSet`/`sizes`
+  (`src/lib/image-url.ts`), thumbnails request small widths, and the
+  images at the top of a page load with high priority instead of lazily.
+- **No wasted catalogue downloads.** The header search, the compare tray and
+  "recently viewed" each fetched and parsed the whole `/api/products` feed on
+  *every* page load (3 requests on the home page). It's now one shared request
+  that only happens when something needs it (search opened, compare list or
+  view history non-empty) — 0 requests on a fresh home load.
+- **Less always-on animation.** The headline's gold shimmer repainted the text
+  every frame forever; it now starts after the page settles and runs 3 sweeps.
+  A large off-screen background diamond no longer plays its draw animation at
+  load.
+- **Layout shift.** The wishlist/cart/compare "Loading…" state reserves
+  height, so the footer no longer jumps when the real content arrives
+  (wishlist CLS 0.19 → 0).
+- **Accessibility.** The logo's spoken name now matches its visible text, and
+  the shop/wishlist grids sit under a heading so heading levels don't skip.
+
+Measured locally, same machine, **median of 3 runs each** (old code built in a
+separate checkout, new code alongside):
+
+| Page | Perf (before → after) | TBT | LCP | Page weight |
+| --- | --- | --- | --- | --- |
+| Home | 64 → 81 | 1406 → 371 ms | 3.6 → 3.2 s | 624 → 365 KiB |
+| Shop | 68 → 91 | 1190 → 196 ms | 2.4 → 3.1 s | 759 → 424 KiB |
+| Product | 75 → 87 | 537 → 260 ms | 3.4 → 3.1 s | 498 → 359 KiB |
+
+Shop LCP got slightly *slower* (2.4 → 3.1 s) even though everything else
+improved; shop CLS went from 0.05-0.09 to 0 and its accessibility score from
+98 to 100. Lighthouse here ran on a slow machine under 4× CPU throttling and
+varies a lot run to run, so treat absolute numbers as pessimistic and only the
+before/after comparison as meaningful.
+
+Re-run it any time (start the site, then):
+
+```bash
+npx lighthouse http://localhost:3000/shop \
+  --only-categories=performance,accessibility --chrome-flags="--headless=new"
+```
+
+Use a production build (`npm run build && npx next start`) for the audit —
+`next dev` is much slower and not representative.
+
+---
+
 ## Scripts
 
 | Command | Does |
@@ -506,6 +562,7 @@ site.
 | Ring size guide | ✅ Live |
 | Privacy Policy & Terms | ⚠️ Live, but needs a legal review — see "Legal pages" |
 | FAQ structured data | ✅ Live |
+| Performance & accessibility pass | ✅ Done — see "Performance & accessibility" |
 | Shop filters | ✅ Live |
 | Drop a hint (wishlist sharing) | ✅ Live |
 | Piece alerts (reserved/sold) | ✅ Live |

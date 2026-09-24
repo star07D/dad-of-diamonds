@@ -10,7 +10,7 @@ import type { Product } from "@/lib/types";
 /** Homepage strip of pieces the visitor already looked at. Renders nothing until hydrated and non-empty. */
 export function RecentlyViewed() {
   const { ids, hydrated } = useRecentlyViewed();
-  const { catalog } = useCatalog();
+  const { catalog } = useCatalog(hydrated && ids.length > 0);
 
   const products = useMemo(() => {
     if (!catalog || ids.length === 0) return [];

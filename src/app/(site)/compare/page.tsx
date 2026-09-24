@@ -8,6 +8,7 @@ import { DiamondMark } from "@/components/logo";
 import { Reveal } from "@/components/reveal";
 import { StatusBadge } from "@/components/status-badge";
 import { formatPrice } from "@/lib/format";
+import { resizedSrc } from "@/lib/image-url";
 import type { Product } from "@/lib/types";
 
 const ROWS: Array<{ label: string; value: (p: Product) => string | undefined }> = [
@@ -36,7 +37,7 @@ export default function ComparePage() {
 
   if (!hydrated || catalog === null) {
     return (
-      <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+      <div className="mx-auto min-h-[70vh] max-w-6xl px-4 py-20 sm:px-6">
         <p className="text-muted">{error ?? "Loading…"}</p>
       </div>
     );
@@ -91,7 +92,7 @@ export default function ComparePage() {
                   <div className="relative">
                     <Link href={`/product/${p.slug}`} className="block">
                       <img
-                        src={p.images[0]?.src}
+                        src={resizedSrc(p.images[0]?.src, 600)}
                         alt={p.images[0]?.alt ?? p.name}
                         className="aspect-square w-full rounded-md object-cover"
                       />

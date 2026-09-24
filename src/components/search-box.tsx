@@ -6,12 +6,14 @@ import { useRouter } from "next/navigation";
 import { useCatalog } from "@/lib/use-catalog";
 import { searchProducts } from "@/lib/search";
 import { formatPrice } from "@/lib/format";
+import { resizedSrc } from "@/lib/image-url";
 
 export function SearchBox() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const router = useRouter();
-  const { catalog } = useCatalog();
+  // Only download the catalogue once the search is actually opened.
+  const { catalog } = useCatalog(open);
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -104,7 +106,7 @@ export function SearchBox() {
                           className="flex items-center gap-3 rounded-md p-2 transition-colors hover:bg-surface-muted"
                         >
                           <img
-                            src={p.images[0]?.src}
+                            src={resizedSrc(p.images[0]?.src, 120)}
                             alt=""
                             className="h-10 w-10 shrink-0 rounded object-cover"
                           />

@@ -90,6 +90,11 @@ export default async function ShopPage({
             <ShopFilters shapes={shapes} />
           </Suspense>
         </div>
+
+        {/* Keeps the heading order h1 -> h2 -> h3 (cards). Lives in this
+            block, not the grid, so it can't add a painted node above the
+            cards that shifts when the page settles. */}
+        <h2 className="sr-only">Pieces</h2>
       </Reveal>
 
       {products.length === 0 ? (
@@ -121,7 +126,7 @@ export default async function ShopPage({
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {products.map((product, i) => (
             <Reveal key={product.id} delay={(i % 3) * 70}>
-              <ProductCard product={product} />
+              <ProductCard product={product} priority={i < 3} />
             </Reveal>
           ))}
         </div>

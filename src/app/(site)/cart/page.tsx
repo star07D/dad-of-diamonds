@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useCart } from "@/lib/cart-context";
 import { useCatalog } from "@/lib/use-catalog";
 import { formatPrice } from "@/lib/format";
+import { resizedSrc } from "@/lib/image-url";
 import { DiamondMark } from "@/components/logo";
 import { Reveal } from "@/components/reveal";
 import type { Product } from "@/lib/types";
@@ -54,7 +55,7 @@ export default function CartPage() {
 
   if (!hydrated || catalog === null) {
     return (
-      <div className="mx-auto max-w-3xl px-4 py-20 sm:px-6">
+      <div className="mx-auto min-h-[70vh] max-w-3xl px-4 py-20 sm:px-6">
         <p className="text-muted">{catalogError ?? "Loading your cart…"}</p>
       </div>
     );
@@ -94,7 +95,7 @@ export default function CartPage() {
               >
                 {item.images[0] && (
                   <img
-                    src={item.images[0].src}
+                    src={resizedSrc(item.images[0].src, 240)}
                     alt={item.name}
                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />

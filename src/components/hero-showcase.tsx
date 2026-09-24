@@ -5,6 +5,7 @@ import { DiamondMark } from "./logo";
 import { WishlistButton } from "./wishlist-button";
 import { useLoupe } from "@/lib/use-loupe";
 import { formatPrice } from "@/lib/format";
+import { resizedSrc, resizedSrcSet } from "@/lib/image-url";
 import type { Product } from "@/lib/types";
 
 /**
@@ -23,8 +24,11 @@ export function HeroShowcase({ product }: { product: Product }) {
     >
       <Link href={`/product/${product.slug}`} className="contents">
         <img
-          src={product.images[0]?.src}
+          src={resizedSrc(product.images[0]?.src, 800)}
+          srcSet={resizedSrcSet(product.images[0]?.src, [400, 800, 1200])}
+          sizes="(min-width: 768px) 384px, 90vw"
           alt={product.images[0]?.alt ?? product.name}
+          fetchPriority="high"
           className="aspect-[4/5] w-full object-cover transition-transform duration-[900ms] ease-out"
         />
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/65 to-transparent p-4 pt-10 text-white">

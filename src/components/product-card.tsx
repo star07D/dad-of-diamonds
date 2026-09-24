@@ -4,8 +4,16 @@ import { formatPrice } from "@/lib/format";
 import { StatusBadge } from "./status-badge";
 import { WishlistButton } from "./wishlist-button";
 import { CompareButton } from "./compare-button";
+import { resizedSrc, resizedSrcSet } from "@/lib/image-url";
 
-export function ProductCard({ product }: { product: Product }) {
+export function ProductCard({
+  product,
+  priority = false,
+}: {
+  product: Product;
+  /** Above-the-fold cards load eagerly instead of lazily. */
+  priority?: boolean;
+}) {
   const image = product.images[0];
   const soldOut = product.status === "sold";
 
@@ -16,12 +24,16 @@ export function ProductCard({ product }: { product: Product }) {
       <Link href={`/product/${product.slug}`} className="contents">
         <div className="relative aspect-square overflow-hidden bg-surface-muted">
           <img
-            src={image?.src}
+            src={resizedSrc(image?.src, 800)}
+            srcSet={resizedSrcSet(image?.src, [400, 800, 1200])}
+            sizes="(min-width: 1024px) 352px, (min-width: 640px) 50vw, 100vw"
             alt={image?.alt ?? product.name}
             className={`h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06] ${
               soldOut ? "opacity-60 grayscale" : ""
             }`}
-            loading="lazy"
+            loading={priority ? "eager" : "lazy"}
+            fetchPriority={priority ? "high" : "auto"}
+            decoding="async"
           />
           {product.status !== "available" && (
             <div className="absolute left-3 top-3">

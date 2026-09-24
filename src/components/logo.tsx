@@ -49,8 +49,8 @@ export function Logo({
     >
       <DiamondMark className={`${markClassName} text-accent transition-transform duration-300 group-hover:rotate-6`} />
       <span className="font-display text-xl leading-none tracking-wide sm:text-[1.35rem]">
-        <span className="font-semibold">Dad</span>
-        <span className="mx-1 text-muted">of</span>
+        <span className="font-semibold">Dad</span>{" "}
+        <span className="mx-0.5 text-muted">of</span>{" "}
         <span className="font-semibold">Diamonds</span>
       </span>
     </Link>
