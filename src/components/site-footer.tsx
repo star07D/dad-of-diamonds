@@ -72,6 +72,11 @@ export function SiteFooter() {
               </Link>
             </li>
             <li>
+              <Link href="/find" className="transition-colors hover:text-accent">
+                Help me choose
+              </Link>
+            </li>
+            <li>
               <Link href="/guide" className="transition-colors hover:text-accent">
                 Understanding the 4 Cs
               </Link>

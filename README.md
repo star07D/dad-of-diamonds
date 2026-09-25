@@ -29,6 +29,13 @@ jewellery — built with **Next.js 16**, **React 19**, **Tailwind CSS 4**,
 - **Diamond guide** — a plain-English "Understanding the 4 Cs" page
   (carat/cut/colour/clarity + why certification matters), linked from the
   footer and from every diamond's spec table.
+- **Help me choose** — a four-question quiz at `/find` (what, budget, look,
+  priority) that ends on a shortlist of up to six real pieces, each with
+  plain reasons computed from its own data ("Within your budget", "Excellent
+  cut for maximum sparkle"). Sold pieces never appear; if nothing fits the
+  budget it says so and shows the nearest-priced pieces. Answers live in the
+  URL, so a shortlist can be shared or bookmarked (result pages are
+  `noindex`). Linked from the shop intro and the footer.
 - **Certificate link** — upload a diamond's certificate (PDF or photo) in
   Sanity and the "Certificate" spec on its product page becomes a clickable
   "GIA"/"IGI" link straight to it. Nothing appears until a file is uploaded —
@@ -160,6 +167,7 @@ src/
       success/                Post-payment confirmation
       about/  contact/        Static pages
       guide/                  "Understanding the 4 Cs" diamond guide
+      find/                   "Help me choose" quiz + shortlist (server-rendered results)
       faq/                    Certification, delivery, resizing, returns
       compare/                Client page — side-by-side diamond comparison
       size-guide/             Ring size conversion chart + measuring tips
@@ -190,6 +198,8 @@ src/
     search.ts                searchProducts — pure, used server + client
     filters.ts               filterProducts + option lists — pure, shared by
                              the shop page and the ShopFilters controls
+    quiz.ts                  Quiz questions, parseAnswers, recommend — pure,
+                             shared by the QuizFlow UI and the /find results
     sample-products.ts      Offline fallback catalogue
     types.ts                Product shape
     cart-context.tsx        localStorage cart (useSyncExternalStore)
@@ -565,6 +575,7 @@ Use a production build (`npm run build && npx next start`) for the audit —
 | Performance & accessibility pass | ✅ Done — see "Performance & accessibility" |
 | Shop filters | ✅ Live |
 | Drop a hint (wishlist sharing) | ✅ Live |
+| Help me choose quiz | ✅ Live |
 | Piece alerts (reserved/sold) | ✅ Live |
 | Instagram strip | ✅ Live |
 | Sold webhook + order email | ⚠️ Built — needs 2 Vercel secrets, see "Mark pieces sold automatically" |

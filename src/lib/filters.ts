@@ -13,8 +13,8 @@ export interface ActiveFilters {
 
 export const FILTER_KEYS = ["price", "shape", "color", "clarity"] as const;
 
-const COLOURS = ["D", "E", "F", "G", "H", "I", "J", "K", "L", "M"];
-const CLARITIES = ["FL", "IF", "VVS1", "VVS2", "VS1", "VS2", "SI1", "SI2", "I1", "I2", "I3"];
+export const COLOURS = ["D", "E", "F", "G", "H", "I", "J", "K", "L", "M"];
+export const CLARITIES = ["FL", "IF", "VVS1", "VVS2", "VS1", "VS2", "SI1", "SI2", "I1", "I2", "I3"];
 
 const PRICE_RANGES: Array<[number, number | null]> = [
   [0, 5000],
@@ -45,7 +45,7 @@ export const CLARITY_OPTIONS = [
   { value: "SI2", label: "SI or better" },
 ];
 
-function parsePrice(value?: string): { min: number; max: number } | null {
+export function parsePrice(value?: string): { min: number; max: number } | null {
   const m = value?.match(/^(\d+)-(\d*)$/);
   if (!m) return null;
   return { min: Number(m[1]), max: m[2] ? Number(m[2]) : Infinity };

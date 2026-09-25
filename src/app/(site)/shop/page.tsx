@@ -65,7 +65,12 @@ export default async function ShopPage({
         <p className="mt-3 max-w-lg text-muted">
           {q || filtersActive
             ? `${products.length} piece${products.length === 1 ? "" : "s"} found.`
-            : "Each item is unique. Prices are all-in; reserve online and we'll confirm the piece is held for you."}
+            : "Each item is unique. Prices are all-in; reserve online and we'll confirm the piece is held for you."}{" "}
+          Not sure where to start?{" "}
+          <Link href="/find" className="text-accent underline underline-offset-4">
+            Help me choose
+          </Link>
+          .
         </p>
 
         <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
