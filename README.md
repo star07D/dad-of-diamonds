@@ -35,7 +35,8 @@ jewellery — built with **Next.js 16**, **React 19**, **Tailwind CSS 4**,
   cut for maximum sparkle"). Sold pieces never appear; if nothing fits the
   budget it says so and shows the nearest-priced pieces. Answers live in the
   URL, so a shortlist can be shared or bookmarked (result pages are
-  `noindex`). Linked from the shop intro and the footer.
+  `noindex`). Linked from the home page's closing call to action, the shop
+  intro and the footer.
 - **Certificate link** — upload a diamond's certificate (PDF or photo) in
   Sanity and the "Certificate" spec on its product page becomes a clickable
   "GIA"/"IGI" link straight to it. Nothing appears until a file is uploaded —

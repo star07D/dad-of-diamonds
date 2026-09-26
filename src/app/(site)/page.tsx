@@ -145,15 +145,24 @@ export default async function HomePage() {
             Not sure where to start?
           </h2>
           <p className="mx-auto mt-3 max-w-md text-muted">
-            Tell us your budget and the occasion. We&apos;ll send a short list of
-            stones that fit, with photos and certificates.
+            Answer four quick questions and we&apos;ll suggest pieces that fit.
+            Or tell us your budget and the occasion, and we&apos;ll send a short
+            list of stones with photos and certificates.
           </p>
-          <Link
-            href="/contact"
-            className="mt-8 inline-block rounded-full bg-accent px-6 py-3 text-sm font-medium text-accent-contrast shadow-sm transition-all hover:-translate-y-0.5 hover:opacity-95 hover:shadow-md active:translate-y-0"
-          >
-            Get in touch
-          </Link>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href="/find"
+              className="inline-block rounded-full bg-accent px-6 py-3 text-sm font-medium text-accent-contrast shadow-sm transition-all hover:-translate-y-0.5 hover:opacity-95 hover:shadow-md active:translate-y-0"
+            >
+              Help me choose
+            </Link>
+            <Link
+              href="/contact"
+              className="inline-block rounded-full border border-border px-6 py-3 text-sm transition-all hover:-translate-y-0.5 hover:border-accent active:translate-y-0"
+            >
+              Get in touch
+            </Link>
+          </div>
         </Reveal>
       </section>
     </>
