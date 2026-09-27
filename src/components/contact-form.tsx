@@ -1,24 +1,28 @@
 "use client";
 
 import { useState } from "react";
-import { SITE } from "@/lib/site";
+import { CATEGORIES, SITE } from "@/lib/site";
 import { DiamondMark } from "./logo";
 
 type Status = "idle" | "sending" | "sent" | "error" | "unavailable";
 
 const TIME_OPTIONS = ["Flexible", "Morning", "Afternoon", "Evening"];
+const CERTIFICATE_OPTIONS = ["Yes", "No", "Not sure"];
+const SELL_CATEGORIES = [...CATEGORIES, { slug: "other", label: "Other" }];
 
 export function ContactForm({
   prefilledItems = [],
   intent,
 }: {
   prefilledItems?: string[];
-  intent?: "offer" | "viewing";
+  intent?: "offer" | "viewing" | "sell";
 }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [date, setDate] = useState("");
   const [timePref, setTimePref] = useState(TIME_OPTIONS[0]);
+  const [sellCategory, setSellCategory] = useState(SELL_CATEGORIES[0].slug);
+  const [certificate, setCertificate] = useState(CERTIFICATE_OPTIONS[2]);
   const [message, setMessage] = useState(
     prefilledItems.length && intent !== "viewing"
       ? intent === "offer"
@@ -35,8 +39,8 @@ export function ContactForm({
   // Rendered once, used to reject bot submits that fire instantly.
   const [startedAt] = useState(() => Date.now());
 
-  // For a viewing request, the date/time fields are the real content — the
-  // free-text box becomes an optional note appended after them.
+  // For a viewing or sell request, the structured fields are the real
+  // content — the free-text box becomes a note appended after them.
   const fullMessage =
     intent === "viewing"
       ? [
@@ -53,7 +57,19 @@ export function ContactForm({
             : []),
           ...(message.trim() ? ["", message.trim()] : []),
         ].join("\n")
-      : message;
+      : intent === "sell"
+        ? [
+            "I'd like to sell or trade in a piece.",
+            "",
+            `Category: ${
+              SELL_CATEGORIES.find((c) => c.slug === sellCategory)?.label ?? sellCategory
+            }`,
+            `Original certificate: ${certificate}`,
+            "",
+            "Description:",
+            message.trim(),
+          ].join("\n")
+        : message;
 
   const whatsappText = encodeURIComponent(
     `${fullMessage}\n\n— ${name || "(your name)"}${email ? ` (${email})` : ""}`,
@@ -64,9 +80,11 @@ export function ContactForm({
       ? "Offer on a piece"
       : intent === "viewing"
         ? "Private viewing request"
-        : prefilledItems.length
-          ? "Enquiry about a piece"
-          : "Enquiry — Dad of Diamonds",
+        : intent === "sell"
+          ? "Sell or trade in a piece"
+          : prefilledItems.length
+            ? "Enquiry about a piece"
+            : "Enquiry — Dad of Diamonds",
   )}&body=${whatsappText}`;
 
   async function onSubmit(e: React.FormEvent) {
@@ -111,7 +129,9 @@ export function ContactForm({
         <p className="mt-2 text-sm text-muted">
           {intent === "viewing"
             ? `Thanks, ${name.split(" ")[0]} — we'll confirm your appointment within one business day.`
-            : `Thanks, ${name.split(" ")[0]} — you'll hear back within one business day.`}
+            : intent === "sell"
+              ? `Thanks, ${name.split(" ")[0]} — we'll take a look and let you know within one business day whether it's something we can offer on.`
+              : `Thanks, ${name.split(" ")[0]} — you'll hear back within one business day.`}
         </p>
       </div>
     );
@@ -181,9 +201,46 @@ export function ContactForm({
         </div>
       )}
 
+      {intent === "sell" && (
+        <div className="grid gap-5 sm:grid-cols-2">
+          <label className="block text-sm">
+            <span className="text-muted">What are you selling?</span>
+            <select
+              value={sellCategory}
+              onChange={(e) => setSellCategory(e.target.value)}
+              className="mt-1.5 w-full rounded-md border border-border bg-surface px-3 py-2.5 outline-none transition-shadow focus:border-accent focus:ring-4 focus:ring-accent/10"
+            >
+              {SELL_CATEGORIES.map((c) => (
+                <option key={c.slug} value={c.slug}>
+                  {c.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="block text-sm">
+            <span className="text-muted">Original certificate?</span>
+            <select
+              value={certificate}
+              onChange={(e) => setCertificate(e.target.value)}
+              className="mt-1.5 w-full rounded-md border border-border bg-surface px-3 py-2.5 outline-none transition-shadow focus:border-accent focus:ring-4 focus:ring-accent/10"
+            >
+              {CERTIFICATE_OPTIONS.map((o) => (
+                <option key={o} value={o}>
+                  {o}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+      )}
+
       <label className="block text-sm">
         <span className="text-muted">
-          {intent === "viewing" ? "Anything else? (optional)" : "Message"}
+          {intent === "viewing"
+            ? "Anything else? (optional)"
+            : intent === "sell"
+              ? "Describe the piece"
+              : "Message"}
         </span>
         <textarea
           value={message}
@@ -193,7 +250,9 @@ export function ContactForm({
           placeholder={
             intent === "viewing"
               ? "Any pieces you'd like to see, or scheduling notes."
-              : "Tell us the occasion, a rough budget, and any preferences on shape or size."
+              : intent === "sell"
+                ? "Metal, gemstone, carat weight, condition, and any history that's relevant. Photos can follow by email or WhatsApp."
+                : "Tell us the occasion, a rough budget, and any preferences on shape or size."
           }
           className="mt-1.5 w-full rounded-md border border-border bg-surface px-3 py-2.5 outline-none transition-shadow focus:border-accent focus:ring-4 focus:ring-accent/10"
         />

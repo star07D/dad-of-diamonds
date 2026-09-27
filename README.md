@@ -64,6 +64,10 @@ jewellery — built with **Next.js 16**, **React 19**, **Tailwind CSS 4**,
   certificate side by side.
 - **Ring size guide** — a US/UK/EU conversion chart plus two ways to
   measure at home, at `/size-guide`, linked from the FAQ and every ring.
+- **Sell or trade in** — a form at `/sell` for people offering a piece,
+  reusing `ContactForm`'s existing enquiry pipeline with an `intent="sell"`
+  branch (category + certificate selects, description). Deliberately makes
+  no promise of a purchase or a price. Linked from the footer.
 - **Privacy Policy & Terms of Sale** — plain-language pages at `/privacy`
   and `/terms`, linked in the footer. They describe what the site actually
   does (grounded in the code — what's emailed vs. stored only in your
@@ -178,8 +182,8 @@ src/
     api/
       products/route.ts      Public catalogue feed (used by the cart)
       checkout/route.ts      Creates the Stripe Checkout session
-      enquiry/route.ts       Sends contact-form / cart / offer enquiries via
-                             Resend
+      enquiry/route.ts       Sends contact-form / cart / offer / sell enquiries
+                             via Resend
       subscribe/route.ts     Sends new-arrivals signups and piece alerts via
                              Resend
       webhook/route.ts       Stripe webhook: verifies the signature, marks
@@ -577,6 +581,7 @@ Use a production build (`npm run build && npx next start`) for the audit —
 | Shop filters | ✅ Live |
 | Drop a hint (wishlist sharing) | ✅ Live |
 | Help me choose quiz | ✅ Live |
+| Sell or trade in form | ✅ Live |
 | Piece alerts (reserved/sold) | ✅ Live |
 | Instagram strip | ✅ Live |
 | Sold webhook + order email | ⚠️ Built — needs 2 Vercel secrets, see "Mark pieces sold automatically" |

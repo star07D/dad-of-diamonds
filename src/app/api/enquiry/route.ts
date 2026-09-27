@@ -39,6 +39,7 @@ export async function POST(request: Request) {
     : [];
   const isOffer = body.intent === "offer";
   const isViewing = body.intent === "viewing";
+  const isSell = body.intent === "sell";
 
   if (!name || !email || !message) {
     return NextResponse.json(
@@ -72,7 +73,9 @@ export async function POST(request: Request) {
       ? `New offer from the website`
       : isViewing
         ? `New private viewing request`
-        : `New enquiry from the website`,
+        : isSell
+          ? `New sell/trade-in enquiry`
+          : `New enquiry from the website`,
     ``,
     `Name: ${name}`,
     `Email: ${email}`,
@@ -93,9 +96,11 @@ export async function POST(request: Request) {
         ? "Offer on a piece"
         : isViewing
           ? "Private viewing request"
-          : items.length
-            ? "Enquiry about a piece"
-            : `Enquiry from ${name}`,
+          : isSell
+            ? "Sell / trade-in enquiry"
+            : items.length
+              ? "Enquiry about a piece"
+              : `Enquiry from ${name}`,
       text,
     });
     if (error) {
