@@ -4,6 +4,8 @@ import type Stripe from "stripe";
 import { stripe } from "@/lib/stripe";
 import { resend, resendConfigured, RESEND_FROM } from "@/lib/resend";
 import { SITE } from "@/lib/site";
+import { getAllProducts } from "@/lib/products";
+import { buildBuyerEmail } from "@/lib/order-email";
 import { markSold, sanityWriteConfigured } from "@/sanity/lib/mark-sold";
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -77,6 +79,22 @@ export async function POST(request: Request) {
         ? `${(session.amount_total / 100).toLocaleString(SITE.locale)} ${session.currency?.toUpperCase()}`
         : "unknown";
 
+      // Names for the emails. markSold only knows the pieces it just updated
+      // (and nothing at all without the CMS token), so fall back to the
+      // catalogue rather than showing a raw id.
+      const names = new Map<string, string>();
+      for (const s of result?.sold ?? []) names.set(s.id, s.name);
+      for (const c of result?.conflicts ?? []) names.set(c.id, c.name);
+      if (ids.some((id) => !names.has(id))) {
+        try {
+          for (const p of await getAllProducts()) {
+            if (ids.includes(p.id) && !names.has(p.id)) names.set(p.id, p.name);
+          }
+        } catch {
+          // Keep going — the ids still identify the pieces.
+        }
+      }
+
       const lines = [
         conflict
           ? "ACTION NEEDED: a payment came in for a piece that was already marked sold. Refund the extra payment in the Stripe dashboard."
@@ -87,10 +105,8 @@ export async function POST(request: Request) {
         "",
         "Pieces:",
         ...ids.map((id) => {
-          const sold = result?.sold.find((s) => s.id === id);
           const clash = result?.conflicts.find((c) => c.id === id);
-          const label = sold?.name ?? clash?.name ?? id;
-          return `- ${label}${clash ? "  (ALREADY SOLD - refund needed)" : ""}`;
+          return `- ${names.get(id) ?? id}${clash ? "  (ALREADY SOLD - refund needed)" : ""}`;
         }),
         ...(result === null
           ? ["", "Note: the site can't update the CMS yet (SANITY_API_WRITE_TOKEN missing) - mark these as sold in the Studio yourself."]
@@ -117,6 +133,32 @@ export async function POST(request: Request) {
         subject: conflict ? "ACTION NEEDED: paid for an already-sold piece" : "New order paid",
         text: lines.join("\n"),
       });
+
+      // A receipt for the buyer — but never when the payment needs refunding.
+      // It has its own try/catch: a failure here must not make Stripe retry
+      // the whole hook. (Until a sending domain is verified in Resend, mail
+      // to anyone but the account owner is rejected, which lands here.)
+      if (buyer?.email && !conflict && session.amount_total != null) {
+        try {
+          const { subject, text } = buildBuyerEmail({
+            name: buyer.name,
+            pieces: ids.map((id) => names.get(id) ?? "Your piece"),
+            total,
+            reference: session.id,
+            shipTo: addressLines(ship?.address ?? buyer.address),
+          });
+          const { error } = await resend.emails.send({
+            from: RESEND_FROM,
+            to: buyer.email,
+            replyTo: SITE.email,
+            subject,
+            text,
+          });
+          if (error) console.error("[webhook] buyer receipt not sent:", error);
+        } catch (err) {
+          console.error("[webhook] buyer receipt failed:", err);
+        }
+      }
     }
   } catch (err) {
     console.error("[webhook] failed to process payment:", err);

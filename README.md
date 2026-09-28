@@ -188,6 +188,7 @@ src/
                              Resend
       webhook/route.ts       Stripe webhook: verifies the signature, marks
                              pieces sold in Sanity, emails the owner the order
+                             and the buyer a receipt
     layout.tsx              Root layout (fonts, metadata) — no header/footer
     globals.css             Theme tokens + all motion/animation CSS
   sanity/
@@ -297,6 +298,18 @@ What it does, and why it's safe:
 - If `SANITY_API_WRITE_TOKEN` isn't set, it still emails you the order and
   reminds you to mark the pieces sold by hand.
 - Without `STRIPE_WEBHOOK_SECRET` the endpoint just answers 501.
+- **The buyer gets a receipt email** (`src/lib/order-email.ts`): the pieces,
+  total paid, delivery address and payment reference, with reply-to set to
+  you. It only says what the site already says elsewhere (insured, tracked
+  delivery) — no invented timelines or policies. It is skipped when the
+  payment needs refunding, when the buyer gave no email, and it can never
+  make Stripe retry the hook if it fails to send.
+
+> **Buyer receipts need a verified sending domain.** Until you verify a
+> domain in Resend (see "Reliable enquiries" below), Resend only delivers to
+> the account owner's own address, so the buyer's receipt is rejected and
+> logged (`[webhook] buyer receipt not sent`) while your own order email
+> still arrives.
 
 > **Known limit:** a piece is only marked sold once payment completes, so
 > two people *can* be in checkout for the same piece simultaneously — the
