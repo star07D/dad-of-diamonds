@@ -26,6 +26,37 @@ function addressLines(a?: Stripe.Address | null): string[] {
   ].filter((x): x is string => Boolean(x));
 }
 
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+type SendPayload = Parameters<NonNullable<typeof resend>["emails"]["send"]>[0];
+
+/**
+ * Sends one email with a couple of retries for transient failures.
+ *
+ * Once a piece is marked sold, a Stripe redelivery of the same event is
+ * treated as a duplicate and short-circuits before either email is
+ * attempted again — see the "duplicate" check below — so a webhook retry
+ * can't recover a failed send. This is the only chance either email gets.
+ */
+async function sendEmailWithRetries(
+  payload: SendPayload,
+  attempts = 3,
+): Promise<boolean> {
+  let lastError: unknown;
+  for (let i = 0; i < attempts; i++) {
+    try {
+      const { error } = await resend!.emails.send(payload);
+      if (!error) return true;
+      lastError = error;
+    } catch (err) {
+      lastError = err;
+    }
+    if (i < attempts - 1) await sleep(300 * (i + 1));
+  }
+  console.error(`[webhook] "${payload.subject}" to ${payload.to} failed after ${attempts} attempts:`, lastError);
+  return false;
+}
+
 export async function POST(request: Request) {
   if (!stripe || !webhookSecret) {
     return NextResponse.json({ configured: false }, { status: 501 });
@@ -126,7 +157,12 @@ export async function POST(request: Request) {
           : ["-"]),
       ];
 
-      await resend.emails.send({
+      // Best effort, but retried a few times — see sendEmailWithRetries.
+      // This is a single person's shop, so a missed "New order paid" email
+      // means a missed sale; failures are logged so they can be found in
+      // Vercel's function logs and, if needed, the piece's Sold status in
+      // the Studio checked to confirm the sale itself still went through.
+      await sendEmailWithRetries({
         from: RESEND_FROM,
         to: SITE.email,
         ...(buyer?.email ? { replyTo: buyer.email } : {}),
@@ -134,30 +170,24 @@ export async function POST(request: Request) {
         text: lines.join("\n"),
       });
 
-      // A receipt for the buyer — but never when the payment needs refunding.
-      // It has its own try/catch: a failure here must not make Stripe retry
-      // the whole hook. (Until a sending domain is verified in Resend, mail
-      // to anyone but the account owner is rejected, which lands here.)
+      // A receipt for the buyer — but never when the payment needs
+      // refunding. (Until a sending domain is verified in Resend, mail to
+      // anyone but the account owner is rejected, which lands here.)
       if (buyer?.email && !conflict && session.amount_total != null) {
-        try {
-          const { subject, text } = buildBuyerEmail({
-            name: buyer.name,
-            pieces: ids.map((id) => names.get(id) ?? "Your piece"),
-            total,
-            reference: session.id,
-            shipTo: addressLines(ship?.address ?? buyer.address),
-          });
-          const { error } = await resend.emails.send({
-            from: RESEND_FROM,
-            to: buyer.email,
-            replyTo: SITE.email,
-            subject,
-            text,
-          });
-          if (error) console.error("[webhook] buyer receipt not sent:", error);
-        } catch (err) {
-          console.error("[webhook] buyer receipt failed:", err);
-        }
+        const { subject, text } = buildBuyerEmail({
+          name: buyer.name,
+          pieces: ids.map((id) => names.get(id) ?? "Your piece"),
+          total,
+          reference: session.id,
+          shipTo: addressLines(ship?.address ?? buyer.address),
+        });
+        await sendEmailWithRetries({
+          from: RESEND_FROM,
+          to: buyer.email,
+          replyTo: SITE.email,
+          subject,
+          text,
+        });
       }
     }
   } catch (err) {

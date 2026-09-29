@@ -291,7 +291,9 @@ What it does, and why it's safe:
   unsigned, wrongly-signed or tampered requests get a 400.
 - It's idempotent — Stripe retries webhooks, and each piece is stamped with
   the payment's session id (the read-only "Stripe payment" field in the
-  Studio) so a repeat delivery does nothing.
+  Studio) so a repeat delivery does nothing. That also means a Stripe
+  redelivery can't be used to recover a failed email once a piece is
+  marked sold — see the retry note below.
 - If a payment arrives for a piece that's **already sold** (two people were
   in checkout at once), the email subject becomes **ACTION NEEDED** and tells
   you to refund the second payment in the Stripe dashboard.
@@ -302,14 +304,20 @@ What it does, and why it's safe:
   total paid, delivery address and payment reference, with reply-to set to
   you. It only says what the site already says elsewhere (insured, tracked
   delivery) — no invented timelines or policies. It is skipped when the
-  payment needs refunding, when the buyer gave no email, and it can never
-  make Stripe retry the hook if it fails to send.
+  payment needs refunding or the buyer gave no email.
+- **Both emails retry on failure** (`sendEmailWithRetries` in the route,
+  three attempts with a short backoff), since a Stripe redelivery can't
+  retry them once the piece is already marked sold (see above). If an
+  email still fails after all three attempts, it's logged
+  (`[webhook] "<subject>" to <address> failed after 3 attempts`) rather than
+  lost silently — check Vercel's function logs, or the piece's Sold status
+  in the Studio, if a sale ever seems to have gone quiet. Nothing about
+  processing the payment or marking the piece sold depends on either email.
 
 > **Buyer receipts need a verified sending domain.** Until you verify a
 > domain in Resend (see "Reliable enquiries" below), Resend only delivers to
-> the account owner's own address, so the buyer's receipt is rejected and
-> logged (`[webhook] buyer receipt not sent`) while your own order email
-> still arrives.
+> the account owner's own address, so every attempt at the buyer's receipt
+> is rejected and logged while your own order email still arrives.
 
 > **Known limit:** a piece is only marked sold once payment completes, so
 > two people *can* be in checkout for the same piece simultaneously — the
