@@ -87,6 +87,11 @@ export function SiteFooter() {
               </Link>
             </li>
             <li>
+              <Link href="/journal" className="transition-colors hover:text-accent">
+                Journal
+              </Link>
+            </li>
+            <li>
               <Link href="/faq" className="transition-colors hover:text-accent">
                 FAQ
               </Link>

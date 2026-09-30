@@ -35,6 +35,8 @@ export default defineConfig({
                       .params({ cat }),
                   ),
             ),
+            S.divider(),
+            S.documentTypeListItem("post").title("Journal posts"),
           ]),
     }),
     visionTool({ defaultApiVersion: apiVersion }),

@@ -1,5 +1,5 @@
 import { getClient } from "./client";
-import type { Product } from "@/lib/types";
+import type { Post, Product } from "@/lib/types";
 
 /**
  * Every field the storefront's `Product` type needs, shaped to match it as
@@ -52,4 +52,44 @@ export async function fetchProductsFromSanity(): Promise<Product[]> {
     { next: { revalidate: 60, tags: ["product"] } },
   );
   return rows.map(normalise);
+}
+
+const POST_PROJECTION = /* groq */ `{
+  "id": _id,
+  "slug": slug.current,
+  title,
+  excerpt,
+  body,
+  publishedAt,
+  "coverImage": coverImage{
+    "src": asset->url + "?w=1600&fit=max&auto=format",
+    "alt": coalesce(alt, ^.title)
+  }
+}`;
+
+const ALL_POSTS = /* groq */ `*[_type == "post" && defined(slug.current)] | order(
+  publishedAt desc
+) ${POST_PROJECTION}`;
+
+type RawPost = Omit<Post, "coverImage"> & {
+  coverImage: { src: string | null; alt: string | null } | null;
+};
+
+function normalisePost(raw: RawPost): Post {
+  return {
+    ...raw,
+    coverImage:
+      raw.coverImage?.src
+        ? { src: raw.coverImage.src, alt: raw.coverImage.alt ?? raw.title }
+        : undefined,
+  };
+}
+
+export async function fetchPostsFromSanity(): Promise<Post[]> {
+  const rows = await getClient().fetch<RawPost[]>(
+    ALL_POSTS,
+    {},
+    { next: { revalidate: 60, tags: ["post"] } },
+  );
+  return rows.map(normalisePost);
 }

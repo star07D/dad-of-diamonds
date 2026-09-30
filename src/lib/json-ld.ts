@@ -1,4 +1,4 @@
-import type { Product, ProductStatus } from "./types";
+import type { Post, Product, ProductStatus } from "./types";
 import { SITE, categoryLabel } from "./site";
 
 function absoluteUrl(src: string): string {
@@ -91,6 +91,21 @@ export function websiteJsonLd() {
     "@type": "WebSite",
     name: SITE.name,
     url: SITE.url,
+  };
+}
+
+/** schema.org Article, so a journal post is eligible for Google rich results. */
+export function articleJsonLd(post: Post) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.title,
+    description: post.excerpt,
+    datePublished: post.publishedAt,
+    url: `${SITE.url}/journal/${post.slug}`,
+    ...(post.coverImage ? { image: absoluteUrl(post.coverImage.src) } : {}),
+    author: { "@type": "Organization", name: SITE.name },
+    publisher: { "@type": "Organization", name: SITE.name },
   };
 }
 

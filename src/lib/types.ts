@@ -41,3 +41,17 @@ export interface Product {
   /** Optional metal / material note for jewellery. */
   material?: string;
 }
+
+export interface Post {
+  /** Stable id (used as the React key). */
+  id: string;
+  slug: string;
+  title: string;
+  /** One or two lines, shown on the journal listing. */
+  excerpt: string;
+  /** Full article, plain text — a blank line starts a new paragraph. */
+  body: string;
+  coverImage?: ProductImage;
+  /** ISO date, e.g. "2026-03-01". */
+  publishedAt: string;
+}

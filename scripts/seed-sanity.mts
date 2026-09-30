@@ -1,6 +1,7 @@
 /**
- * One-time: load the 12 starter pieces (and their placeholder images) into
- * Sanity so the Studio isn't empty. Safe to re-run — it replaces by id.
+ * One-time: load the 12 starter pieces (and their placeholder images), plus
+ * 3 starter journal posts, into Sanity so the Studio isn't empty. Safe to
+ * re-run — it replaces by id.
  *
  * Setup — put these in .env.local:
  *   NEXT_PUBLIC_SANITY_PROJECT_ID=...
@@ -18,6 +19,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createClient } from "@sanity/client";
 import { SAMPLE_PRODUCTS } from "../src/lib/sample-products";
+import { SAMPLE_POSTS } from "../src/lib/sample-posts";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -117,4 +119,21 @@ for (const p of SAMPLE_PRODUCTS) {
   );
 }
 
-console.log(`\nDone - ${SAMPLE_PRODUCTS.length} pieces in Sanity. Open /studio.`);
+for (const post of SAMPLE_POSTS) {
+  console.log("seeding post:", post.title);
+  await withRetry(`write ${post.id}`, () =>
+    client.createOrReplace({
+      _id: `seed-${post.id}`,
+      _type: "post",
+      title: post.title,
+      slug: { _type: "slug", current: post.slug },
+      excerpt: post.excerpt,
+      body: post.body,
+      publishedAt: post.publishedAt,
+    }),
+  );
+}
+
+console.log(
+  `\nDone - ${SAMPLE_PRODUCTS.length} pieces and ${SAMPLE_POSTS.length} journal posts in Sanity. Open /studio.`,
+);

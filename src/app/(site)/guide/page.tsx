@@ -85,6 +85,13 @@ export default function GuidePage() {
             Ask a question
           </Link>
         </div>
+        <p className="mt-6 text-sm text-muted">
+          More on this in the{" "}
+          <Link href="/journal" className="text-accent underline underline-offset-4">
+            journal
+          </Link>
+          .
+        </p>
       </Reveal>
     </div>
   );

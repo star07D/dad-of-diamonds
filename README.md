@@ -68,6 +68,12 @@ jewellery — built with **Next.js 16**, **React 19**, **Tailwind CSS 4**,
   reusing `ContactForm`'s existing enquiry pipeline with an `intent="sell"`
   branch (category + certificate selects, description). Deliberately makes
   no promise of a purchase or a price. Linked from the footer.
+- **Journal** — buying guides at `/journal`, the same Sanity-or-sample-data
+  pattern as the catalogue (`src/lib/posts.ts`, schema in
+  `src/sanity/schemaTypes/post.ts`). Ships with 3 general, non-business-
+  specific starter posts (see "Connect the CMS" to add real ones). Each post
+  page carries Article structured data; linked from the footer, the 4 Cs
+  guide, and its own entry in the sitemap.
 - **Privacy Policy & Terms of Sale** — plain-language pages at `/privacy`
   and `/terms`, linked in the footer. They describe what the site actually
   does (grounded in the code — what's emailed vs. stored only in your
@@ -173,6 +179,8 @@ src/
       about/  contact/        Static pages
       guide/                  "Understanding the 4 Cs" diamond guide
       find/                   "Help me choose" quiz + shortlist (server-rendered results)
+      sell/                   Sell / trade-in enquiry form
+      journal/                Buying guides — listing + [slug] article pages
       faq/                    Certification, delivery, resizing, returns
       compare/                Client page — side-by-side diamond comparison
       size-guide/             Ring size conversion chart + measuring tips
@@ -192,8 +200,10 @@ src/
     layout.tsx              Root layout (fonts, metadata) — no header/footer
     globals.css             Theme tokens + all motion/animation CSS
   sanity/
-    schemaTypes/product.ts  The CMS schema (diamond.certificateFile is the
+    schemaTypes/
+      product.ts             The CMS schema (diamond.certificateFile is the
                              certificate upload)
+      post.ts                Journal post schema
     lib/                    Sanity client + GROQ queries; mark-sold.ts (webhook
                              write-back) + plan-sold.ts (its pure decision logic)
     env.ts                  Reads NEXT_PUBLIC_SANITY_* (soft — never throws)
@@ -206,8 +216,11 @@ src/
                              the shop page and the ShopFilters controls
     quiz.ts                  Quiz questions, parseAnswers, recommend — pure,
                              shared by the QuizFlow UI and the /find results
+    posts.ts                 The ONLY place that reads journal posts
+                             (same Sanity-or-sample pattern as products.ts)
     sample-products.ts      Offline fallback catalogue
-    types.ts                Product shape
+    sample-posts.ts          Offline fallback journal posts
+    types.ts                Product + Post shapes
     cart-context.tsx        localStorage cart (useSyncExternalStore)
     wishlist-context.tsx    localStorage wishlist — same pattern as the cart
     recently-viewed-context.tsx  localStorage view history — same pattern
@@ -407,9 +420,10 @@ the pages directly; there's no CMS integration for this content.
 ## Connect the CMS (Sanity)
 
 The Studio is **already built** — it lives at `/studio` and the schema is in
-`src/sanity/schemaTypes/product.ts`. It just needs a Sanity project to point at.
-Until then the site serves `src/lib/sample-products.ts` and `/studio` shows a
-setup notice.
+`src/sanity/schemaTypes/product.ts` (pieces) and `post.ts` (journal posts).
+It just needs a Sanity project to point at. Until then the site serves
+`src/lib/sample-products.ts` and `src/lib/sample-posts.ts`, and `/studio`
+shows a setup notice.
 
 ### 1. Create a free Sanity project
 
@@ -437,7 +451,7 @@ NEXT_PUBLIC_SANITY_DATASET=production
 Redeploy on Vercel. Now `/studio` loads the real editor (sign in with the same
 Sanity account).
 
-### 4. (Optional) Load the 12 starter pieces
+### 4. (Optional) Load the 12 starter pieces + 3 starter journal posts
 
 1. In Sanity dashboard → **API → Tokens → Add token** → name "seed", role
    **Editor** → copy it
@@ -447,7 +461,7 @@ Sanity account).
    npm run seed
    ```
 4. Open `/studio`, replace the placeholder images with real photos, delete any
-   pieces you don't want.
+   pieces you don't want, and edit or delete the 3 starter journal posts.
 
 > The token is only for this one script — don't put it in Vercel. Delete it
 > from Sanity once you're done seeding (this project's token has already been
@@ -591,6 +605,7 @@ Use a production build (`npm run build && npx next start`) for the audit —
 | Make an offer | ✅ Live |
 | Private viewing booking | ✅ Live |
 | Certificate link | ✅ Live — needs a file uploaded per diamond in Sanity to show |
+| Journal | ✅ Live — ships with 3 starter posts, add real ones in the Studio |
 | Testimonials | ⚠️ Placeholder copy — needs real client quotes |
 | Recently viewed | ✅ Live |
 | FAQ | ✅ Live |
