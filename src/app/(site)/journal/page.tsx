@@ -22,6 +22,12 @@ export default async function JournalPage() {
           Buying guides and practical notes — what actually matters when
           choosing a stone, and how to look after what you own.
         </p>
+        <a
+          href="/journal/rss.xml"
+          className="mt-3 inline-block text-xs text-muted underline underline-offset-4 transition-colors hover:text-accent"
+        >
+          RSS feed
+        </a>
         <h2 className="sr-only">Posts</h2>
       </Reveal>
 

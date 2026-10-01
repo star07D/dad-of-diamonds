@@ -32,6 +32,9 @@ export const metadata: Metadata = {
     siteName: SITE.name,
     type: "website",
   },
+  alternates: {
+    types: { "application/rss+xml": "/journal/rss.xml" },
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

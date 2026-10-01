@@ -73,7 +73,9 @@ jewellery — built with **Next.js 16**, **React 19**, **Tailwind CSS 4**,
   `src/sanity/schemaTypes/post.ts`). Ships with 3 general, non-business-
   specific starter posts (see "Connect the CMS" to add real ones). Each post
   page carries Article structured data; linked from the footer, the 4 Cs
-  guide, and its own entry in the sitemap.
+  guide, and its own entry in the sitemap. An RSS feed at
+  `/journal/rss.xml` is linked from the journal page and auto-discoverable
+  by feed readers via the `<link rel="alternate">` tag in the root layout.
 - **Privacy Policy & Terms of Sale** — plain-language pages at `/privacy`
   and `/terms`, linked in the footer. They describe what the site actually
   does (grounded in the code — what's emailed vs. stored only in your
@@ -181,6 +183,7 @@ src/
       find/                   "Help me choose" quiz + shortlist (server-rendered results)
       sell/                   Sell / trade-in enquiry form
       journal/                Buying guides — listing + [slug] article pages
+                             + rss.xml (feed)
       faq/                    Certification, delivery, resizing, returns
       compare/                Client page — side-by-side diamond comparison
       size-guide/             Ring size conversion chart + measuring tips
