@@ -117,10 +117,14 @@ const MAX_RESULTS = 6;
 const rank = (list: string[], value?: string) =>
   list.indexOf((value ?? "").trim().toUpperCase());
 
-/** Distance from a price to a budget range; 0 when inside it. */
+/**
+ * Distance from a price to a budget range; 0 only when inside it. The top of a
+ * range is exclusive (as in the shop filter) so a price of exactly the max
+ * belongs to the next range up, hence the +1.
+ */
 function distance(price: number, range: { min: number; max: number }) {
   if (price < range.min) return range.min - price;
-  if (price >= range.max) return price - range.max;
+  if (price >= range.max) return price - range.max + 1;
   return 0;
 }
 

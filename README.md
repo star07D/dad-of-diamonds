@@ -223,6 +223,8 @@ src/
                              (same Sanity-or-sample pattern as products.ts)
     sample-products.ts      Offline fallback catalogue
     sample-posts.ts          Offline fallback journal posts
+    *.test.ts                Unit tests, beside the code they cover (npm test)
+    test-fixtures.ts         makeProduct() helper shared by the tests
     types.ts                Product + Post shapes
     cart-context.tsx        localStorage cart (useSyncExternalStore)
     wishlist-context.tsx    localStorage wishlist — same pattern as the cart
@@ -581,7 +583,22 @@ Use a production build (`npm run build && npx next start`) for the audit —
 | `npm run build` | Production build |
 | `npm run start` | Serve the production build |
 | `npm run lint` | ESLint |
-| `npm run seed` | Load the 12 starter pieces into Sanity (needs a write token) |
+| `npm test` | Unit tests (Node's built-in runner via `tsx`, no extra dependency) |
+| `npm run seed` | Load the 12 starter pieces and 3 journal posts into Sanity (needs a write token) |
+
+### Tests and CI
+
+`npm test` runs the `*.test.ts` files that sit next to the code they check:
+the quiz matching, shop filters, search, the "already sold" decision logic
+(`plan-sold`), the buyer receipt wording, image URL resizing and date/price
+formatting. They only cover the pure logic — no browser, no Stripe, no
+Sanity, no keys — so they run in a couple of seconds.
+
+`.github/workflows/ci.yml` runs typecheck, lint and these tests on every
+push and pull request, and GitHub shows a red cross on the commit if any of
+them fail. It's a safety net, not a deploy gate: Vercel still builds and
+deploys on its own. When you add logic that decides something (a filter, a
+price rule), add a test beside it.
 
 ---
 

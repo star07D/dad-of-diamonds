@@ -11,6 +11,7 @@ export function formatPrice(amount: number): string {
 }
 
 const dateFormatter = new Intl.DateTimeFormat(SITE.locale, {
+  timeZone: "UTC",
   year: "numeric",
   month: "long",
   day: "numeric",
