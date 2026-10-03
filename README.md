@@ -573,6 +573,28 @@ npx lighthouse http://localhost:3000/shop \
 Use a production build (`npm run build && npx next start`) for the audit —
 `next dev` is much slower and not representative.
 
+### Beyond Lighthouse: the states it can't see
+
+Lighthouse always loads a page with empty browser storage, so it never sees a
+cart with items, a saved wishlist, the compare tray, an open photo viewer or
+the open search panel. Those were checked separately with
+[axe-core](https://github.com/dequelabs/axe-core) across 23 page states on
+desktop and mobile, plus a keyboard-only walkthrough of the photo viewer. That
+found and fixed:
+
+- the compare tray sat outside every page landmark (now a labelled `aside`);
+- the compare table's corner header cell was empty;
+- the header menu and the product breadcrumb were two unnamed `nav`
+  landmarks (now "Main" and "Breadcrumb");
+- the main product photo opened the zoom viewer from a click handler on a
+  plain `div`, so keyboard and screen-reader users couldn't open it (now a
+  real button), and the viewer didn't move focus in, keep Tab inside, or hand
+  focus back on close (it now does all three).
+
+These checks were run by hand and are not part of `npm test` or CI. Automated
+tools only catch part of accessibility, so a real screen-reader pass is still
+worth doing before launch.
+
 ---
 
 ## Scripts

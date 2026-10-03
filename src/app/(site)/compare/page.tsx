@@ -83,7 +83,9 @@ export default function ComparePage() {
         <table className="w-full min-w-[560px] border-separate border-spacing-0">
           <thead>
             <tr>
-              <th className="w-28" />
+              <th className="w-28">
+                <span className="sr-only">Detail</span>
+              </th>
               {products.map((p) => (
                 <th
                   key={p.id}

@@ -68,7 +68,7 @@ export default async function ProductPage({
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
       <JsonLd data={productJsonLd(product)} />
       <RecordView productId={product.id} />
-      <nav className="text-sm text-muted">
+      <nav aria-label="Breadcrumb" className="text-sm text-muted">
         <Link href="/shop" className="hover:text-accent">
           Shop
         </Link>

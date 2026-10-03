@@ -20,7 +20,12 @@ export function CompareTray() {
   if (!hydrated || ids.length === 0) return null;
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-surface/95 backdrop-blur">
+    // A labelled landmark, so the tray isn't loose content outside every
+    // region of the page for screen-reader users.
+    <aside
+      aria-label="Pieces to compare"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-surface/95 backdrop-blur"
+    >
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6">
         <div className="flex items-center gap-2">
           {products.map(
@@ -75,6 +80,6 @@ export function CompareTray() {
           </Link>
         </div>
       </div>
-    </div>
+    </aside>
   );
 }

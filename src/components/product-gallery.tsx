@@ -20,10 +20,15 @@ export function ProductGallery({
 
   return (
     <div>
-      <div
+      {/* A real button, so keyboard and screen-reader users can open the
+          zoomed view — a click handler on a div can't be reached by Tab. */}
+      <button
+        type="button"
         {...loupe}
         onClick={() => setLightboxOpen(true)}
-        className="cursor-light group relative cursor-zoom-in overflow-hidden rounded-lg border border-border bg-surface-muted"
+        aria-label={`View larger: ${current?.alt ?? "photo"}`}
+        aria-haspopup="dialog"
+        className="cursor-light group relative block w-full cursor-zoom-in overflow-hidden rounded-lg border border-border bg-surface-muted text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
       >
         <img
           src={resizedSrc(current?.src, 1000)}
@@ -48,7 +53,7 @@ export function ProductGallery({
             <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
           </svg>
         </span>
-      </div>
+      </button>
 
       {images.length > 1 && (
         <div className="mt-3 flex gap-3">

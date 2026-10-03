@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import type { ProductImage } from "@/lib/types";
 
@@ -15,6 +15,17 @@ export function Lightbox({
   onClose: () => void;
   onNavigate: (index: number) => void;
 }) {
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+
+  // Move focus into the viewer when it opens and hand it back to whatever
+  // opened it when it closes.
+  useEffect(() => {
+    const opener = document.activeElement as HTMLElement | null;
+    closeRef.current?.focus();
+    return () => opener?.focus();
+  }, []);
+
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -24,6 +35,25 @@ export function Lightbox({
       if (e.key === "ArrowRight") onNavigate((index + 1) % images.length);
       if (e.key === "ArrowLeft")
         onNavigate((index - 1 + images.length) % images.length);
+
+      // aria-modal says the page behind is inert, so keep Tab inside.
+      if (e.key === "Tab") {
+        const items = dialogRef.current?.querySelectorAll<HTMLElement>("button");
+        if (!items?.length) return;
+        const first = items[0];
+        const last = items[items.length - 1];
+        const active = document.activeElement;
+        if (!dialogRef.current?.contains(active)) {
+          e.preventDefault();
+          first.focus();
+        } else if (e.shiftKey && active === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && active === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     }
     window.addEventListener("keydown", onKey);
     return () => {
@@ -36,6 +66,7 @@ export function Lightbox({
 
   return createPortal(
     <div
+      ref={dialogRef}
       role="dialog"
       aria-modal="true"
       aria-label="Image viewer"
@@ -43,6 +74,7 @@ export function Lightbox({
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
     >
       <button
+        ref={closeRef}
         type="button"
         onClick={onClose}
         aria-label="Close"
