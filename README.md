@@ -41,8 +41,14 @@ jewellery — built with **Next.js 16**, **React 19**, **Tailwind CSS 4**,
   Sanity and the "Certificate" spec on its product page becomes a clickable
   "GIA"/"IGI" link straight to it. Nothing appears until a file is uploaded —
   every diamond currently shows plain text, same as before.
-- **Search** — a header search box with live suggestions (name, summary,
-  category) as you type, and a full results page at `/shop?q=`.
+- **Search** — a header search box with live suggestions as you type, and a
+  full results page at `/shop?q=`. Every word you type has to match
+  somewhere in a piece, in any order, so `oval si1` finds a 1.20ct oval
+  graded SI1. It looks in the name, summary, description, category, metal and
+  the stone's shape, cut, colour, clarity and certificate lab. A word of three
+  or more letters matches anywhere in a word; a one- or two-letter word (a
+  colour grade like `G`) must start a word, otherwise `e` would match nearly
+  everything.
 - **Trust badges** — certified / secure checkout / insured delivery, shown
   next to the buy buttons on every product page and in the footer.
 - **Make an offer** — a negotiate link next to Reserve/Add to cart that opens
