@@ -177,6 +177,22 @@ export default function CartPage() {
         </button>
       )}
 
+      {!enquiry && (
+        <p className="mt-3 text-center text-xs text-muted">
+          {items.some((i) => i.category === "rings") ? (
+            <>
+              You&apos;ll choose your ring size at checkout —{" "}
+              <Link href="/size-guide" className="underline underline-offset-4 hover:text-accent">
+                not sure of it?
+              </Link>{" "}
+              You can add a gift message there too.
+            </>
+          ) : (
+            "You can add a gift message at checkout."
+          )}
+        </p>
+      )}
+
       <p className="mt-3 text-center text-xs text-muted">
         Payments are processed securely by Stripe. We never see your card
         details.

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getProductsByIds } from "@/lib/products";
 import { stripe, stripeConfigured } from "@/lib/stripe";
 import { SITE } from "@/lib/site";
+import { buildCheckoutFields } from "@/lib/checkout-fields";
 
 export async function POST(request: Request) {
   let ids: string[] = [];
@@ -61,6 +62,9 @@ export async function POST(request: Request) {
       ],
     },
     phone_number_collection: { enabled: true },
+    // A ring size (when there's a ring) and an optional gift message. The
+    // answers come back on the session and are read by the webhook.
+    custom_fields: buildCheckoutFields(available),
   });
 
   return NextResponse.json({ url: session.url });

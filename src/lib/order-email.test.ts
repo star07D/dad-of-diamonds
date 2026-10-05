@@ -36,6 +36,26 @@ describe("buildBuyerEmail", () => {
     assert.ok(!buildBuyerEmail({ ...base, shipTo: [] }).text.includes("Delivering to:"));
   });
 
+  it("repeats what the buyer chose at checkout, when they chose anything", () => {
+    const { text } = buildBuyerEmail({
+      ...base,
+      details: [
+        { label: "Ring size", value: "US 7 · UK N½ · EU 54.0" },
+        { label: "Gift message (optional)", value: "Happy birthday, Mum!" },
+      ],
+    });
+    assert.ok(
+      text.includes(
+        "What you chose:\nRing size: US 7 · UK N½ · EU 54.0\nGift message (optional): Happy birthday, Mum!",
+      ),
+    );
+  });
+
+  it("leaves that section out when nothing was chosen", () => {
+    assert.ok(!buildBuyerEmail(base).text.includes("What you chose"));
+    assert.ok(!buildBuyerEmail({ ...base, details: [] }).text.includes("What you chose"));
+  });
+
   it("has a subject naming the shop, and makes no promises beyond what the site says", () => {
     const { subject, text } = buildBuyerEmail(base);
     assert.equal(subject, "Your Dad of Diamonds order is confirmed");

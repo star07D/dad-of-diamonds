@@ -16,6 +16,8 @@ export interface BuyerEmailInput {
   reference: string;
   /** Delivery address lines, if collected. */
   shipTo: string[];
+  /** What the buyer chose at checkout, e.g. ring size or a gift message. */
+  details?: Array<{ label: string; value: string }>;
 }
 
 export function buildBuyerEmail(input: BuyerEmailInput): {
@@ -33,6 +35,9 @@ export function buildBuyerEmail(input: BuyerEmailInput): {
     ...input.pieces.map((p) => `- ${p}`),
     `Total paid: ${input.total}`,
     ...(input.shipTo.length ? ["", "Delivering to:", ...input.shipTo] : []),
+    ...(input.details?.length
+      ? ["", "What you chose:", ...input.details.map((d) => `${d.label}: ${d.value}`)]
+      : []),
     "",
     "We'll be in touch soon to confirm delivery details. Delivery is insured and tracked. If anything above looks wrong, or you have a question, just reply to this email.",
     "",

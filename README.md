@@ -70,6 +70,14 @@ jewellery — built with **Next.js 16**, **React 19**, **Tailwind CSS 4**,
   certificate side by side.
 - **Ring size guide** — a US/UK/EU conversion chart plus two ways to
   measure at home, at `/size-guide`, linked from the FAQ and every ring.
+- **Ring size and gift message at checkout** — Stripe's checkout page asks
+  for a ring size when there's a ring in the cart (a dropdown built from the
+  size guide's table, with a "not sure - please contact me" option; a text
+  box if there are several rings) and offers an optional gift message. The
+  answers come back on the payment and are shown in your order email under
+  "Chosen at checkout" and repeated in the buyer's receipt, so nobody has to
+  chase a size afterwards. The cart tells the buyer to expect these. Built in
+  `src/lib/checkout-fields.ts` and `src/lib/ring-sizes.ts`.
 - **Sell or trade in** — a form at `/sell` for people offering a piece,
   reusing `ContactForm`'s existing enquiry pipeline with an `intent="sell"`
   branch (category + certificate selects, description). Deliberately makes
@@ -198,7 +206,8 @@ src/
     studio/[[...tool]]/     Embedded Sanity Studio at /studio
     api/
       products/route.ts      Public catalogue feed (used by the cart)
-      checkout/route.ts      Creates the Stripe Checkout session
+      checkout/route.ts      Creates the Stripe Checkout session (incl. the
+                             ring size / gift message questions)
       enquiry/route.ts       Sends contact-form / cart / offer / sell enquiries
                              via Resend
       subscribe/route.ts     Sends new-arrivals signups and piece alerts via
@@ -325,8 +334,8 @@ What it does, and why it's safe:
   reminds you to mark the pieces sold by hand.
 - Without `STRIPE_WEBHOOK_SECRET` the endpoint just answers 501.
 - **The buyer gets a receipt email** (`src/lib/order-email.ts`): the pieces,
-  total paid, delivery address and payment reference, with reply-to set to
-  you. It only says what the site already says elsewhere (insured, tracked
+  total paid, delivery address, anything they chose at checkout (ring size,
+  gift message) and the payment reference, with reply-to set to you. It only says what the site already says elsewhere (insured, tracked
   delivery) — no invented timelines or policies. It is skipped when the
   payment needs refunding or the buyer gave no email.
 - **Both emails retry on failure** (`sendEmailWithRetries` in the route,

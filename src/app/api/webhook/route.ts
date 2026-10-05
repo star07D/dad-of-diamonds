@@ -6,6 +6,7 @@ import { resend, resendConfigured, RESEND_FROM } from "@/lib/resend";
 import { SITE } from "@/lib/site";
 import { getAllProducts } from "@/lib/products";
 import { buildBuyerEmail } from "@/lib/order-email";
+import { readCheckoutFields } from "@/lib/checkout-fields";
 import { markSold, sanityWriteConfigured } from "@/sanity/lib/mark-sold";
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -106,6 +107,8 @@ export async function POST(request: Request) {
       const buyer = session.customer_details;
       const ship = session.collected_information?.shipping_details;
       const conflict = (result?.conflicts.length ?? 0) > 0;
+      // Ring size and gift message, as the buyer filled them in at checkout.
+      const details = readCheckoutFields(session.custom_fields);
       const total = session.amount_total != null
         ? `${(session.amount_total / 100).toLocaleString(SITE.locale)} ${session.currency?.toUpperCase()}`
         : "unknown";
@@ -155,6 +158,9 @@ export async function POST(request: Request) {
         ...(addressLines(ship?.address ?? buyer?.address).length
           ? addressLines(ship?.address ?? buyer?.address)
           : ["-"]),
+        ...(details.length
+          ? ["", "Chosen at checkout:", ...details.map((d) => `${d.label}: ${d.value}`)]
+          : []),
       ];
 
       // Best effort, but retried a few times — see sendEmailWithRetries.
@@ -180,6 +186,7 @@ export async function POST(request: Request) {
           total,
           reference: session.id,
           shipTo: addressLines(ship?.address ?? buyer.address),
+          details,
         });
         await sendEmailWithRetries({
           from: RESEND_FROM,
