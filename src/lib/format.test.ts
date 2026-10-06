@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { formatPrice } from "./format";
+import { formatPrice, readingTime } from "./format";
 
 describe("formatPrice", () => {
   it("formats whole dollars with no decimals", () => {
@@ -37,5 +37,28 @@ describe("formatDate", () => {
 
   it("does not shift a day for readers east of UTC", async () => {
     assert.equal(await formatIn("Pacific/Auckland", "2026-08-03"), "August 3, 2026");
+  });
+});
+
+describe("readingTime", () => {
+  const words = (n: number) => Array.from({ length: n }, () => "word").join(" ");
+
+  it("rounds up to whole minutes at about 220 words a minute", () => {
+    assert.equal(readingTime(words(220)), "1 min read");
+    assert.equal(readingTime(words(221)), "2 min read");
+    assert.equal(readingTime(words(1100)), "5 min read");
+  });
+
+  it("never says 0 minutes, even for a very short or empty text", () => {
+    assert.equal(readingTime(""), "1 min read");
+    assert.equal(readingTime("Just a few words."), "1 min read");
+  });
+
+  it("counts words, not spaces or line breaks", () => {
+    assert.equal(readingTime(`${words(220)}
+
+
+   
+${words(1)}`), "2 min read");
   });
 });

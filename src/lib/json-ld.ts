@@ -94,6 +94,26 @@ export function websiteJsonLd() {
   };
 }
 
+/**
+ * schema.org BreadcrumbList, so search results can show the page's place in
+ * the site ("Shop › Rings › …"). Mirror the trail the page really shows. The
+ * last item is the current page, so it has no `path` and no address.
+ */
+export function breadcrumbJsonLd(
+  trail: Array<{ name: string; path?: string }>,
+) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: trail.map((crumb, i) => ({
+      "@type": "ListItem" as const,
+      position: i + 1,
+      name: crumb.name,
+      ...(crumb.path ? { item: absoluteUrl(crumb.path) } : {}),
+    })),
+  };
+}
+
 /** schema.org Article, so a journal post is eligible for Google rich results. */
 export function articleJsonLd(post: Post) {
   return {

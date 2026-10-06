@@ -19,7 +19,7 @@ import { TrustBadges } from "@/components/trust-badges";
 import { RecordView } from "@/components/record-view";
 import { Reveal } from "@/components/reveal";
 import { JsonLd } from "@/components/json-ld";
-import { productJsonLd } from "@/lib/json-ld";
+import { breadcrumbJsonLd, productJsonLd } from "@/lib/json-ld";
 
 export async function generateStaticParams() {
   const products = await getAllProducts();
@@ -67,6 +67,16 @@ export default async function ProductPage({
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
       <JsonLd data={productJsonLd(product)} />
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Shop", path: "/shop" },
+          {
+            name: categoryLabel(product.category),
+            path: `/shop?category=${product.category}`,
+          },
+          { name: product.name },
+        ])}
+      />
       <RecordView productId={product.id} />
       <nav aria-label="Breadcrumb" className="text-sm text-muted">
         <Link href="/shop" className="hover:text-accent">

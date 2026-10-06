@@ -86,8 +86,9 @@ jewellery — built with **Next.js 16**, **React 19**, **Tailwind CSS 4**,
   pattern as the catalogue (`src/lib/posts.ts`, schema in
   `src/sanity/schemaTypes/post.ts`). Ships with 3 general, non-business-
   specific starter posts (see "Connect the CMS" to add real ones). Each post
-  page carries Article structured data; linked from the footer, the 4 Cs
-  guide, and its own entry in the sitemap. An RSS feed at
+  page carries Article structured data, a "Home / Journal" breadcrumb and a
+  reading time ("3 min read", shown on the cards too); linked from the
+  footer, the 4 Cs guide, and its own entry in the sitemap. An RSS feed at
   `/journal/rss.xml` is linked from the journal page and auto-discoverable
   by feed readers via the `<link rel="alternate">` tag in the root layout.
 - **Privacy Policy & Terms of Sale** — plain-language pages at `/privacy`
@@ -212,6 +213,8 @@ src/
                              via Resend
       subscribe/route.ts     Sends new-arrivals signups and piece alerts via
                              Resend
+      health/route.ts        Yes/no list of what's configured (never a value);
+                             read by npm run check-live
       webhook/route.ts       Stripe webhook: verifies the signature, marks
                              pieces sold in Sanity, emails the owner the order
                              and the buyer a receipt
@@ -264,6 +267,7 @@ src/
                              JsonLd
 scripts/
   seed-sanity.mts           Loads the 12 starter pieces + photos into Sanity
+  check-live.mts            Go-live readiness check of the live site (npm run check-live)
 public/products/            Starter product photography (licensed stock)
 docs/screenshots/           Images used in this README
 ```
@@ -522,8 +526,10 @@ site.
 
 - **Structured data** (`src/lib/json-ld.ts`, rendered by
   `src/components/json-ld.tsx`) — every product page carries schema.org
-  `Product` + `Offer` markup (price, availability, images, the 4 Cs), and
-  every page carries `Organization` + `WebSite`. Check any live product URL
+  `Product` + `Offer` markup (price, availability, images, the 4 Cs) plus a
+  `BreadcrumbList` mirroring the visible Shop / Category trail, journal posts
+  carry `Article` + `BreadcrumbList`, and every page carries `Organization` +
+  `WebSite`. Check any live product URL
   in [Google's Rich Results Test](https://search.google.com/test/rich-results)
   to see it parsed.
 - **`sitemap.ts`** / **`robots.ts`** — already wired to the live catalogue.
@@ -622,6 +628,32 @@ worth doing before launch.
 | `npm run lint` | ESLint |
 | `npm test` | Unit tests (Node's built-in runner via `tsx`, no extra dependency) |
 | `npm run seed` | Load the 12 starter pieces and 3 journal posts into Sanity (needs a write token) |
+| `npm run check-live` | Checklist of what's set up on the live site and what's still to do |
+
+### Go-live check
+
+`npm run check-live` asks the **live** site what's configured and prints a
+checklist: real pieces vs the placeholder starters, Stripe (and whether it's
+in test or live mode), the webhook secret, the CMS write token, email and
+whether a sending domain is set, the site address, Vercel Analytics, the
+placeholder testimonials, and journal posts. Run it after each setup step to
+see that step turn from `[TODO]` to `[ OK ]`.
+
+```bash
+npm run check-live                          # the default live address
+npm run check-live -- https://yourdomain.com
+npm run check-live -- --deep                # also proves checkout works
+```
+
+It's safe to run as often as you like. It only reads pages, plus one unsigned
+request to the Stripe webhook that the site rejects, so it never sends an
+email or charges anyone. `--deep` creates one **unpaid** Stripe checkout
+session (it expires by itself) to confirm checkout works and say whether it's
+test or live. The site reports its own setup at `/api/health` as yes/no
+values only — no secret, key or token value is ever included (there's a test
+for that). Some things can't be confirmed from outside, like whether your
+Resend domain is verified or whether the Privacy and Terms pages have been
+reviewed; the command lists those at the end so they aren't forgotten.
 
 ### Tests and CI
 
@@ -674,6 +706,7 @@ price rule), add a test beside it.
 | Shop filters | ✅ Live |
 | Drop a hint (wishlist sharing) | ✅ Live |
 | Help me choose quiz | ✅ Live |
+| Go-live readiness check | ✅ `npm run check-live` |
 | Sell or trade in form | ✅ Live |
 | Piece alerts (reserved/sold) | ✅ Live |
 | Instagram strip | ✅ Live |

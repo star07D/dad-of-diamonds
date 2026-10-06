@@ -9,6 +9,7 @@
     "lint": "eslint",
     "test": "tsx --test \"src/**/*.test.ts\"",
     "seed": "tsx scripts/seed-sanity.mts",
+    "check-live": "tsx scripts/check-live.mts",
     "typegen": "sanity typegen generate"
   },
   "dependencies": {

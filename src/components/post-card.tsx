@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Post } from "@/lib/types";
-import { formatDate } from "@/lib/format";
+import { formatDate, readingTime } from "@/lib/format";
 import { resizedSrc, resizedSrcSet } from "@/lib/image-url";
 import { DiamondMark } from "./logo";
 
@@ -35,7 +35,9 @@ export function PostCard({
       </div>
 
       <div className="flex flex-1 flex-col gap-1 p-4">
-        <p className="text-xs text-muted">{formatDate(post.publishedAt)}</p>
+        <p className="text-xs text-muted">
+          {formatDate(post.publishedAt)} · {readingTime(post.body)}
+        </p>
         <h3 className="font-display text-lg leading-snug">{post.title}</h3>
         <p className="text-sm text-muted">{post.excerpt}</p>
       </div>

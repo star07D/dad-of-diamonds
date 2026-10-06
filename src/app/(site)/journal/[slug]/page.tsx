@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getAllPosts, getPostBySlug, getRelatedPosts } from "@/lib/posts";
-import { formatDate } from "@/lib/format";
+import { formatDate, readingTime } from "@/lib/format";
 import { resizedSrc, resizedSrcSet } from "@/lib/image-url";
 import { PostCard } from "@/components/post-card";
 import { DiamondMark } from "@/components/logo";
 import { Reveal } from "@/components/reveal";
 import { JsonLd } from "@/components/json-ld";
-import { articleJsonLd } from "@/lib/json-ld";
+import { articleJsonLd, breadcrumbJsonLd } from "@/lib/json-ld";
 
 export async function generateStaticParams() {
   const posts = await getAllPosts();
@@ -44,15 +44,30 @@ export default async function PostPage({
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
       <JsonLd data={articleJsonLd(post)} />
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Journal", path: "/journal" },
+          { name: post.title },
+        ])}
+      />
 
       <Reveal>
-        <p className="eyebrow">
+        <nav aria-label="Breadcrumb" className="eyebrow">
+          <Link href="/" className="hover:text-accent">
+            Home
+          </Link>
+          <span className="mx-2" aria-hidden="true">
+            /
+          </span>
           <Link href="/journal" className="hover:text-accent">
             Journal
           </Link>
-        </p>
+        </nav>
         <h1 className="mt-2 font-display text-4xl">{post.title}</h1>
-        <p className="mt-3 text-sm text-muted">{formatDate(post.publishedAt)}</p>
+        <p className="mt-3 text-sm text-muted">
+          {formatDate(post.publishedAt)} · {readingTime(post.body)}
+        </p>
       </Reveal>
 
       <Reveal delay={60} className="mt-8 overflow-hidden rounded-lg">

@@ -22,3 +22,11 @@ const dateFormatter = new Intl.DateTimeFormat(SITE.locale, {
 export function formatDate(isoDate: string): string {
   return dateFormatter.format(new Date(`${isoDate}T00:00:00Z`));
 }
+
+const WORDS_PER_MINUTE = 220;
+
+/** "4 min read" — whole minutes, rounded up, never less than one. */
+export function readingTime(text: string): string {
+  const words = text.trim().split(/\s+/).filter(Boolean).length;
+  return `${Math.max(1, Math.ceil(words / WORDS_PER_MINUTE))} min read`;
+}
